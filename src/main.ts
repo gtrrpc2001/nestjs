@@ -1,15 +1,42 @@
 import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
-import { join } from 'path';
+import { ValidationPipe } from '@nestjs/common';
+import { AppModule } from './module/app.module';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
+import { IsNumber } from 'class-validator';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
+  
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true
+      }
+    }),
+  );
+  
+  const config = new DocumentBuilder()
+  .setTitle('msl')
+  .setDescription('API description')
+  .setVersion('1.0')
+  .build()
 
-  app.useStaticAssets(join(__dirname, '..', 'public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'views'));
-  app.setViewEngine('ejs');
-
-  await app.listen(3000);
+  
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api',app,document);
+  app.enableCors({    
+    origin:['https://web-react-jvpb2alnydi25x.sel5.cloudtype.app/'],//'*',
+    methods:['POST', 'PUT', 'DELETE', 'GET'],
+    credentials:true
+  }); 
+  
+  // const configService = app.get(ConfigService) 
+  // let port = configService.get<string>('LOCALPORT')
+  
+  await app.listen('40081');
 }
 bootstrap();
