@@ -69,7 +69,7 @@ export class ecg_raw_history_lastService {
           .subQuery()
           .select(subSelect)
           .from(ecg_csv_datadayEntity,'')
-          .where(`writetime >= ${writetime}`)          
+          .where(`writetime >= '${writetime}'`)          
           .groupBy('eq')          
           .getQuery()
           return result
