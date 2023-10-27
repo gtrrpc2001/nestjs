@@ -6,11 +6,7 @@ import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-<<<<<<< HEAD
   
-=======
-  //app.useWebSocketAdapter(new WsAdapter(app));
->>>>>>> f47a62987c60b1efa34dffced4472e627572471c
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -32,7 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api',app,document);
   app.enableCors({    
-    origin: ['https://web-react-jvpb2alnydi25x.sel5.cloudtype.app/'],//'*',
+    origin:['https://web-react-jvpb2alnydi25x.sel5.cloudtype.app/'],//'*',
     methods:['POST', 'PUT', 'DELETE', 'GET'],
     credentials:true
   }); 
