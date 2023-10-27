@@ -55,5 +55,21 @@ import { parentsEntity } from 'src/entity/parents.entity';
           }
           return tokens
       }
+
+      static async getEcgNumArr(result:any[]): Promise<number[]>{
+        const changeEcg:number[] =[]
+        const ecgArr = result?.map((ecg:any) => {
+          const ecgArr = ecg.ecgpacket            
+          const after = ecgArr?.replaceAll(';','')                                
+          after?.split('][').forEach((data:string) => {
+                  const sliceEcg = data?.replaceAll('[','')?.replaceAll(']','')?.split(',')
+                  sliceEcg.forEach(d => {                            
+                  changeEcg.push(Number(d))
+                  
+              })
+          })                       
+      })
+      return changeEcg
+      }
     
 }

@@ -52,7 +52,7 @@ export class ecg_raw_history_lastService {
         .orderBy('writetime' ,'DESC')   
         .getRawMany()  
         
-        const Value = (result.length != 0 && writetime != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')
+        const Value = (result.length != 0 && writetime != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')       
         
         return Value;
       }catch(E){
@@ -69,10 +69,12 @@ export class ecg_raw_history_lastService {
           .subQuery()
           .select(subSelect)
           .from(ecg_csv_datadayEntity,'')
-          .where(`writetime >= ${writetime}`)          
+          .where(`writetime >= '${writetime}'`)          
           .groupBy('eq')          
-          .getQuery()
+          .getQuery()          
+
           return result
+
         }catch(E){
           console.log(E)
         }

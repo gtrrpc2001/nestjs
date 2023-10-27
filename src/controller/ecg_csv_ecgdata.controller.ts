@@ -20,4 +20,12 @@ export class ecg_csv_ecgdataController {
     return this.ecg_csv_ecgdataService.ecgPacket(eq,"2023-08-31","2023-09-01");
   }
 
+  @Get("/Ecg")
+ async getEcg(       
+   @Query('eq') eq:string,
+   @Query('startDate') startDate:string,
+   ): Promise<number[]> {       
+    return this.ecg_csv_ecgdataService.getEcg(eq,startDate);
+  }
+
 }

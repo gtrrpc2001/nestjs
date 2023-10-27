@@ -2,12 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './module/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
-import { IsNumber } from 'class-validator';
+import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+  app.useWebSocketAdapter(new WsAdapter(app));
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -29,7 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api',app,document);
   app.enableCors({    
-    origin:['https://web-react-jvpb2alnydi25x.sel5.cloudtype.app/'],//'*',
+    origin:'*',//['https://web-react-jvpb2alnydi25x.sel5.cloudtype.app/'],
     methods:['POST', 'PUT', 'DELETE', 'GET'],
     credentials:true
   }); 
