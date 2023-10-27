@@ -36,6 +36,6 @@ async function bootstrap() {
   // const configService = app.get(ConfigService) 
   // let port = configService.get<string>('LOCALPORT')
   
-  await app.listen('3000');
+  await app.listen('40081');
 }
 bootstrap();
