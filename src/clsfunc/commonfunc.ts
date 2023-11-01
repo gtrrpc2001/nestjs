@@ -67,7 +67,8 @@ import { parentsEntity } from 'src/entity/parents.entity';
                   changeEcg.push(Number(d))
                   
               })
-          })                       
+          })
+          return changeEcg                     
       })
       return changeEcg
       }

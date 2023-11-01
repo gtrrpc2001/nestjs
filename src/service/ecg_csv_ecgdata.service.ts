@@ -86,6 +86,7 @@ try{
                             .andWhere({"writetime":MoreThanOrEqual(startDate)})
                             .getRawMany()
       const changeEcg:number[] = await commonFun.getEcgNumArr(result)
+      const test = {startDate,changeEcg}
       const Value = (result.length != 0 && empid != null)? changeEcg : [0]
       console.log(empid)                                                    
       return Value;    

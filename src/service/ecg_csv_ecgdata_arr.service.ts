@@ -10,13 +10,16 @@ import { parentsEntity } from 'src/entity/parents.entity';
 import { firebasenoti } from 'src/alarm/firebasenoti';
 import { isDefined } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
+import { 인원_목록Service } from './인원_목록.service';
+import { 인원_목록Entity } from 'src/entity/인원_목록.entity';
 
 @Injectable()
 export class ecg_csv_ecgdata_arrService {
   ecg_raws: ecg_csv_ecgdata_arrEntity[] = [];    
   constructor(
     @InjectRepository(ecg_csv_ecgdata_arrEntity) private ecg_csv_ecgdata_arrRepository:Repository<ecg_csv_ecgdata_arrEntity>,
-    @InjectRepository(parentsEntity) private parentsRepository:Repository<parentsEntity>,
+    @InjectRepository(parentsEntity) private parentsRepository:Repository<parentsEntity>,   
+    @InjectRepository(인원_목록Entity) private 인원_목록Repository:Repository<인원_목록Entity>, 
     private configService:ConfigService
     ){}
 
@@ -118,9 +121,16 @@ export class ecg_csv_ecgdata_arrService {
                             .andWhere({"writetime":MoreThan(startDate)})
                             .andWhere({"writetime":LessThan(endDate)})
                             .getRawMany()
-      const Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')
-      console.log(empid)                                                    
+      let Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')      
+      const info = await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid)
+      if(result.length != 0 && !info.includes('result')){
+       const arr = Value?.replace('[{','')       
+       const profile = info?.replace('}]',',')
+       Value =  profile + arr
+      }
+      console.log(Value)                                                    
       return Value;    
+      //return Value
     } catch(E){
         console.log(E)
     }                 

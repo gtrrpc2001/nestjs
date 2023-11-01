@@ -31,7 +31,7 @@ export class 인원_목록Controller {
 
   @Get("/Profile")
  async getProfile(       
-   @Query('empid') empid:string): Promise<string> { 
+   @Query('empid') empid:string): Promise<string> {     
     return this.인원_목록Service.getProfile(empid);
   }
 
