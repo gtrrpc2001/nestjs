@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './module/app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { WsAdapter } from '@nestjs/platform-ws';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,9 +26,15 @@ async function bootstrap() {
   
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api',app,document);
+<<<<<<< HEAD
   app.enableCors({    
     origin:'*',//['https://web-react-jvpb2alnydi25x.sel5.cloudtype.app/'],
     methods:['POST', 'PUT', 'DELETE', 'GET'],
+=======
+  app.enableCors({        
+    origin: true,
+    methods:'GET,HEAD,PUT,PATCH,POST,DELETE',
+>>>>>>> b03fbe72c0c4e7574eeeaed26ae4cfc82373d2d0
     credentials:true
   }); 
   
