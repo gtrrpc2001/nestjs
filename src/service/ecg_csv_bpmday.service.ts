@@ -86,7 +86,13 @@ export class ecg_csv_bpmdayService {
    async BpmData (empid:string,startDate:string,endDate:string): Promise<string>{    
     console.log('BpmData')           
     const result = await commonQuery.whereIfResult(this.ecg_csv_bpmdayRepository,this.table,this.select,empid,startDate,endDate);             
-    const Value = (result.length != 0 && empid != null)? commonFun.convertCsv(commonFun.converterJson(result)) : commonFun.converterJson('result = ' + '0')                
+    const Value = (result.length != 0 && empid != null)? commonFun.convertCsv(commonFun.converterJson(result))  : commonFun.converterJson('result = ' + '0')                
     return Value;    
     } 
+
+    async getWebBpm (empid:string,startDate:string,endDate:string):Promise<string>{
+      const select = 'bpm,writetime'
+      const result = await commonQuery.whereIfResult(this.ecg_csv_bpmdayRepository,this.table,select,empid,startDate,endDate);  
+      return commonFun.converterJson(result)
+    }
 }

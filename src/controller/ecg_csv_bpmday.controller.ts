@@ -1,4 +1,4 @@
-import { Controller, Get,Post,Body,Query} from '@nestjs/common';
+import { Controller, Get,Post,Body,Query, Param} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ecg_csv_ecgdataDTO } from 'src/dto/ecg_csv_ecgdata.dto';
 import { ecg_csv_bpmdayService } from 'src/service/ecg_csv_bpmday.service';
@@ -19,8 +19,17 @@ export class ecg_csv_bpmdayController {
  async getBpm(    
    @Query('eq') eq:string,
    @Query('startDate') startDate:string,
-   @Query('endDate') endDate:string): Promise<string> {        
+   @Query('endDate') endDate:string
+   ): Promise<string> {        
     return this.ecg_csv_bpmdayService.BpmData(eq,startDate,endDate);
+  }
+
+  @Get("/webBpm")
+ async getWebBpm(       
+   @Query('eq') eq:string,
+   @Query('startDate') startDate:string,
+   @Query('endDate') endDate:string): Promise<string> {       
+    return this.ecg_csv_bpmdayService.getWebBpm(eq,startDate,endDate);
   }
 
   @Get("/test")

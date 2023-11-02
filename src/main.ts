@@ -28,7 +28,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api',app,document);
   app.enableCors({    
-    origin:true,
+    origin:'*',//['https://web-react-jvpb2alnydi25x.sel5.cloudtype.app/'],
     methods:['POST', 'PUT', 'DELETE', 'GET'],
     credentials:true
   }); 

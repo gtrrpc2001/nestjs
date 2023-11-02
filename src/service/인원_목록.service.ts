@@ -112,22 +112,7 @@ export class 인원_목록Service {
   async getProfile(empid:string): Promise<string>{
     //프로필정보 -- 보호자 번호까지 받아옴    
    return await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid)
-    // var boolResult = false 
-    // try{
-    //     let select = 'a.아이디,a.성명,a.이메일,a.핸드폰,a.성별,a.신장,a.몸무게,a.나이,a.생년월일,a.가입일,'+
-    //     'a.설정_수면시작,a.설정_수면종료,a.설정_활동BPM,a.설정_일걸음,a.설정_일거리,a.설정_일활동칼로리,' +
-    //     'a.설정_일칼로리,a.알림_sms,a.시간차이,b.phone'
-    //     const result = await this.인원_목록Repository.createQueryBuilder('a')        
-    // .select(select)    
-    // .leftJoin(parentsEntity,'b','a.아이디 = b.eq')    
-    // .where({"아이디":empid})    
-    // .getRawMany()    
-    // console.log(result)
-    // const jsonValue = (result.length != 0 && empid != null)? result : 'result = ' + boolResult.toString()     
-    // return commonFun.converterJson(jsonValue);
-    // }catch(E){
-    //     console.log(E)
-    // }    
+      
   } 
 
   async CheckLoginGuardianApp(empid:string,pw:string,phone:string,token: string): Promise<boolean>{
