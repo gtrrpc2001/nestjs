@@ -11,13 +11,13 @@ export class ecg_csv_ecgdataController {
   @Post("/api_getdata")
  async postAll(    
    @Body() body: ecg_csv_ecgdataDTO): Promise<any> {        
-    return this.ecg_csv_ecgdataService.gubunKind(body);
+    return await this.ecg_csv_ecgdataService.gubunKind(body);
   }
 
   @Get("/test")
  async getTest(       
    @Query('eq') eq:string): Promise<any> {       
-    return this.ecg_csv_ecgdataService.ecgPacket(eq,"2023-08-31","2023-09-01");
+    return await this.ecg_csv_ecgdataService.ecgPacket(eq,"2023-08-31","2023-09-01");
   }
 
   @Get("/Ecg")
@@ -25,7 +25,7 @@ export class ecg_csv_ecgdataController {
    @Query('eq') eq:string,
    @Query('startDate') startDate:string,
    ): Promise<number[]> {       
-    return this.ecg_csv_ecgdataService.getEcg(eq,startDate);
+    return await this.ecg_csv_ecgdataService.getEcg(eq,startDate);
   }
 
 }

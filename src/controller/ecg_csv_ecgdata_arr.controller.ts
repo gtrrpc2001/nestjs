@@ -11,7 +11,7 @@ export class ecg_csv_ecgdata_arrController {
   @Post("/api_getdata")
  async postAll(    
    @Body() body: ecg_csv_ecgdataDTO): Promise<any> {        
-    return this.ecg_csv_ecgdata_arrService.gubunKind(body);
+    return await this.ecg_csv_ecgdata_arrService.gubunKind(body);
   }
 
   @Get("/arrEcgData")
@@ -19,7 +19,7 @@ export class ecg_csv_ecgdata_arrController {
    @Query('eq') eq:string,
    @Query('startDate') startDate:string,
    @Query('endDate') endDate:string): Promise<string> {       
-    return this.ecg_csv_ecgdata_arrService.arrEcgData(eq,startDate,endDate);
+    return await this.ecg_csv_ecgdata_arrService.arrEcgData(eq,startDate,endDate);
   }
 
   @Get("/test")
@@ -28,7 +28,7 @@ export class ecg_csv_ecgdata_arrController {
   @Query('eq') eq:string,
   @Query('startDate') startDate:string,
   @Query('endDate') endDate:string): Promise<any> {       
-    return this.ecg_csv_ecgdata_arrService.testArr(idx,eq,startDate,endDate);
+    return await this.ecg_csv_ecgdata_arrService.testArr(idx,eq,startDate,endDate);
   }
 
   @Get("/arrCnt")
@@ -36,7 +36,16 @@ export class ecg_csv_ecgdata_arrController {
   @Query('eq') eq:string,
   @Query('startDate') startDate:string,
   @Query('endDate') endDate:string): Promise<any> {       
-    return this.ecg_csv_ecgdata_arrService.countArr(eq,startDate,endDate);
+    return await this.ecg_csv_ecgdata_arrService.countArr(eq,startDate,endDate);
   }
 
+  @Get("/graphArrCnt")
+ async getGraphArrCount(   
+  @Query('eq') eq:string,
+  @Query('startDate') startDate:string,
+  @Query('endDate') endDate:string,
+  @Query('len') len:number
+  ): Promise<any> {       
+    return await this.ecg_csv_ecgdata_arrService.graphArrCount(eq,startDate,endDate,len);
+  }
 }

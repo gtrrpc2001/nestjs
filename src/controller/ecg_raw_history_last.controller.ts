@@ -11,19 +11,19 @@ export class ecg_raw_history_lastController {
   @Post("/api_getdata")
  async postAll(    
    @Body() body: ecg_raw_history_lastDTO): Promise<any> {        
-    return this.ecg_raw_history_lastService.gubunKind(body);
+    return await this.ecg_raw_history_lastService.gubunKind(body);
   }
 
   @Get("/last")
  async getLast(       
    @Query('eq') eq:string): Promise<string> {       
-    return this.ecg_raw_history_lastService.getEcg_raw_history_last(eq);
+    return await this.ecg_raw_history_lastService.getEcg_raw_history_last(eq);
   }
 
   @Get("/webTable")
  async getTest(       
    @Query('writetime') writetime:string): Promise<any> {       
-    return this.ecg_raw_history_lastService.gethistory_last(writetime);
+    return await this.ecg_raw_history_lastService.gethistory_last(writetime);
   }
 
 }

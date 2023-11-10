@@ -11,14 +11,13 @@ export class 인원_목록Controller {
   @Post("/api_getdata")
  async postAll(    
    @Body() body: 인원_목록DTO): Promise<any> {        
-    return this.인원_목록Service.gubunKind(body);
-  }
-  checkIDDupe
+    return await this.인원_목록Service.gubunKind(body);
+  } 
 
   @Get("/CheckIDDupe")
  async getCheckIDDupe(       
    @Query('empid') empid:string): Promise<string> {       
-    return this.인원_목록Service.checkIDDupe(empid);
+    return await this.인원_목록Service.checkIDDupe(empid);
   }
 
   @Get("/findID")
@@ -26,13 +25,13 @@ export class 인원_목록Controller {
    @Query('성명') name:string,
    @Query('핸드폰') phone:string,
    @Query('생년월일') birth:string): Promise<string> {       
-    return this.인원_목록Service.findID(name,phone,birth);
+    return await this.인원_목록Service.findID(name,phone,birth);
   }
 
   @Get("/Profile")
  async getProfile(       
    @Query('empid') empid:string): Promise<string> {     
-    return this.인원_목록Service.getProfile(empid);
+    return await this.인원_목록Service.getProfile(empid);
   }
 
   @Get("/CheckLogin")
@@ -41,7 +40,7 @@ export class 인원_목록Controller {
    @Query('pw') pw:string,
    @Query('phone') phone:string,
    @Query('token') token:string): Promise<string> {     
-    return this.인원_목록Service.checkLogin(empid,pw,phone,token);
+    return await this.인원_목록Service.checkLogin(empid,pw,phone,token);
   }  
 
   @Get("/test")
@@ -50,6 +49,6 @@ export class 인원_목록Controller {
    @Query('pw') pw:string,
    @Query('phone') phone:string,
    @Query('token') token:string): Promise<any> {
-    return this.인원_목록Service.CheckLoginGuardianApp(empid,pw,phone,token);
+    return await this.인원_목록Service.CheckLoginGuardianApp(empid,pw,phone,token);
   }
 }

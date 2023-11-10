@@ -135,7 +135,28 @@ export class ecg_csv_ecgdata_arrService {
         console.log(E)
     }                 
   
- } 
+ }
+
+ async graphArrCount (empid:string,startDate:string,endDate:string,len:number):Promise<string>{
+  try{
+      const startLen = commonFun.getStartLen(len)
+      console.log(`${startLen} -- ${len}`)
+      const result = await this.ecg_csv_ecgdata_arrRepository.createQueryBuilder('ecg_csv_ecgdata_arr')
+                      .select(`MID(writetime,${startLen},2) writetime,COUNT(ecgpacket) count`)
+                      .where({"eq":empid})
+                      .andWhere({"writetime":MoreThan(startDate)})
+                      .andWhere({"writetime":LessThan(endDate)})
+                      .groupBy(`MID(writetime,1,${len})`)
+                      .having('COUNT(ecgpacket)')                      
+                      .getRawMany()
+      const Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')                   
+      return Value
+  }catch(E){
+    console.log(E)
+  }
+ }
+
+
    
    async testArr (idx:number,empid:string,startDate:string,endDate:string): Promise<string>{        
       try{

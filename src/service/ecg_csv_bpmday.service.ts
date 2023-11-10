@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository,MoreThan,LessThan } from 'typeorm';
 import { ecg_csv_ecgdataDTO } from "src/dto/ecg_csv_ecgdata.dto";
 import { ecg_csv_bpmdayEntity } from 'src/entity/ecg_csv_bpmday.entity';
 import { commonFun } from 'src/clsfunc/commonfunc';
@@ -34,7 +34,7 @@ export class ecg_csv_bpmdayService {
     console.log(`InsertBpmData --- ${body.writetime}`)
     try{
         const result = await this.setInsert(body)
-
+        console.log(body.ecgtimezone)
         if(result){
          boolResult = await this.updateLast(body)
         }
@@ -49,11 +49,12 @@ export class ecg_csv_bpmdayService {
 
   async updateLast(body:ecg_csv_ecgdataDTO): Promise<boolean>{    
     try{   
-      console.log(`${body.cal}--${body.calexe}--${body.step}--${body.distanceKM}--${body.arrcnt}--${body.temp}`)     
+      console.log(`${body.cal}--${body.calexe}--${body.step}--${body.distanceKM}--${body.arrcnt}--${body.temp}`) 
+       const timezone = body.timezone.includes('+') ? body.timezone : '+' + body.timezone
         const result = await this.ecg_raw_history_lastRepository.createQueryBuilder()
         .update(ecg_raw_history_lastEntity)        
         .set({"writetime":body.writetime ,"hrv":body.hrv,"cal":body.cal,"calexe":body.calexe,"step":body.step,
-          "distanceKM":body.distanceKM,"arrcnt":body.arrcnt,"temp":body.temp,"eventcode":body.eventcode,
+          "distanceKM":body.distanceKM,"arrcnt":body.arrcnt,"temp":body.temp,"timezone":timezone,"eventcode":body.eventcode,
           "isack":body.isack,"log":body.log
           })
         .where({"eq":body.eq})
@@ -91,8 +92,18 @@ export class ecg_csv_bpmdayService {
     } 
 
     async getWebBpm (empid:string,startDate:string,endDate:string):Promise<string>{
-      const select = 'bpm,writetime'
-      const result = await commonQuery.whereIfResult(this.ecg_csv_bpmdayRepository,this.table,select,empid,startDate,endDate);  
-      return commonFun.converterJson(result)
+      try{ 
+        const select = 'bpm,hrv,writetime'
+        const result = await this.ecg_csv_bpmdayRepository.createQueryBuilder(this.table)
+                        .select(select)
+                        .where({"eq":empid})
+                        .andWhere({'writetime':MoreThan(startDate)})
+                        .andWhere({'writetime':LessThan(endDate)})
+                        .orderBy('MID(writetime,12,8)','ASC')
+                        .getRawMany()
+        return commonFun.converterJson(result)
+      }catch(E){
+        console.log(E)
+      }
     }
 }

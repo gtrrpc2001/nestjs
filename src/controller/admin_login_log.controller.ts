@@ -13,7 +13,7 @@ export class admin_login_logController {
   @Post("/api_getdata")
  async postLog(    
    @Body() body: admin_login_logDTO): Promise<any> {        
-    return this.admin_login_logService.LogInsert(body);
+    return await this.admin_login_logService.LogInsert(body);
   }  
 
   @Get("/test")
