@@ -123,6 +123,7 @@ export class 인원_목록Service {
      console.log(`보호자앱 로그인 체크 ${boolResult}`)  
         
      if(boolResult && isDefined(token)){
+        console.log('여기 ' + token )
         const parentsResult = await this.tokenUpdateGuardianApp(empid,phone,token)
         return parentsResult
      }   
@@ -130,14 +131,13 @@ export class 인원_목록Service {
     return boolResult
   }
 
-  async tokenUpdateGuardianApp(empid:string,phone:string,token: string): Promise<boolean>{
+  async tokenUpdateGuardianApp(empid:string,phone:string,token:string): Promise<boolean>{
    try{
         await this.parentsRepository.createQueryBuilder()
         .update(parentsEntity)
-        .set({token:token})
+        .set({token:token,writetime:commonFun.getWritetime()})
         .where({"eq":empid}).andWhere({"phone":phone})
-        .execute()
-        
+        .execute()        
         return true;
    }catch(E){
         console.log(E)

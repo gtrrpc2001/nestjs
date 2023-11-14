@@ -49,6 +49,6 @@ export class 인원_목록Controller {
    @Query('pw') pw:string,
    @Query('phone') phone:string,
    @Query('token') token:string): Promise<any> {
-    return await this.인원_목록Service.CheckLoginGuardianApp(empid,pw,phone,token);
+     return await this.인원_목록Service.CheckLoginGuardianApp(empid,pw,phone,token);    
   }
 }

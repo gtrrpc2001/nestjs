@@ -1,4 +1,4 @@
-import { IsNumber,IsOptional,IsString } from "class-validator";
+import { IsNumber,IsOptional,IsString, isNumber } from "class-validator";
 
 
 export class ecg_csv_ecgdataDTO{
