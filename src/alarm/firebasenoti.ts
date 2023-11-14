@@ -43,7 +43,7 @@ export class firebasenoti{
         try{    
          const interfaceTitle = this.getTitle(arrStatus,bodystate,timezone)
          const interfaceBody = this.getBody(address,time)
-         const nationalCheck = !timezone.includes('US')
+         const nationalCheck = !timezone?.includes('US')
          let title = nationalCheck ? interfaceTitle.ko : interfaceTitle.en
          let body = nationalCheck?  interfaceBody.ko : interfaceBody.en
          console.log('여기 ' + title)
