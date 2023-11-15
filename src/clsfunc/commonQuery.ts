@@ -29,7 +29,7 @@ export class commonQuery{
         return result;
     }
 
-    static async getProfile(Repository:any,parentsEntity:any,empid:string):Promise<string>{
+    static async getProfile(Repository:any,parentsEntity:any,empid:string,bool=false):Promise<string>{
         let boolResult = false
         try{
             let select = 'a.아이디,a.성명,a.이메일,a.핸드폰,a.성별,a.신장,a.몸무게,a.나이,a.생년월일,a.가입일,'+
