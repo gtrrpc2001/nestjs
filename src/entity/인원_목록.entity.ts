@@ -7,137 +7,126 @@ export class 인원_목록Entity{
     idx: number;
 
     @Column({type:'varchar'})
-    구분:string;
+    gubun:string;
 
     @Column({type:'varchar'})
-    업체번호:string;
+    businessNum:string;
 
     @Column({type:'varchar'})
-    업체명:string;
+    businessName:string;
 
     @Column({type:'varchar'})
-    부서:string;
+    department:string;
 
     @Column({type:'varchar'})
-    직급:string;
+    rank:string;
     
     @Column({type:'varchar'})
-    성명:string;
+    eqname:string;
 
     @Column({type:'varchar'})
-    핸드폰:string;
+    phone:string;
 
     @Column({type:'varchar'})
-    전화번호:string;
+    number:string;
 
     @Column({type:'varchar'})
-    이메일:string;
+    email:string;
 
     @Column({type:'varchar'})
-    주소:string;
+    address:string;
     
     @Column({type:'varchar'})
-    아이디:string;         
+    eq:string;         
 
     @Column({type:'text'})
-    패스워드키:string;
+    password:string;
     
     @Column({type:'text'})
-    패스워드키임시:string;
+    temporaryPwd:string;
 
     @Column({type:'varchar'})
-    성별:string;
+    sex:string;
 
     @Column({type:'varchar'})
-    신장:string;
+    height:string;
 
     @Column({type:'varchar'})
-    몸무게:string;
+    weight:string;
 
     @Column({type:'varchar'})
-    나이:string;
+    age:string;
     
     @Column({type:'date'})
-    생년월일:string;
+    birth:string;
 
     @Column({type:'varchar'})
-    업무:string;   
+    work:string;   
 
     @Column({type:'varchar'})
-    메모:string;
+    memo:string;
 
     @Column({type:'varchar'})
-    권한:string;     
+    authority:string;     
 
     @Column({type:'date'})
-    사용기간시작:string;
+    sdate:string;
 
     @Column({type:'date'})
-    사용기간종료:string;
+    edate:string;
 
     @Column({type:'varchar'})
-    승인여부:string;
+    approval:string;
 
     @Column({type:'varchar'})
-    근로계약서서명여부:string;
+    contractSign:string;
 
     @Column({type:'datetime'})
-    근무시작시각:string;
+    workSdate:string;
 
     @Column({type:'datetime'})
-    근무종료시각:string;
+    workEdate:string;
 
     @Column({type:'int'})
-    로그인시도:Int32;
+    tryLogin:Int32;
     
     @Column({type:'int'})
-    잠금:Int32;
+    lock:Int32;
 
     @Column({type:'datetime'})
-    잠금시각:string; 
+    lockdate:string; 
 
     @Column({type:'datetime'})
-    가입일:string;
+    signupdate:string;
 
     @Column({type:'int'})
-    설정_수면시작:Int32;
+    sleeptime:Int32;
 
     @Column({type:'int'})
-    설정_수면종료:Int32;  
+    uptime:Int32;  
 
     @Column({type:'double'})
-    설정_활동BPM:Double;
+    bpm:Double;
 
     @Column({type:'double'})
-    설정_일걸음:Double;
+    step:Double;
 
     @Column({type:'double'})
-    설정_일거리:Double;
+    distanceKM:Double;
 
     @Column({type:'double'})
-    설정_일활동칼로리:Double;
+    calexe:Double;
 
     @Column({type:'double'})
-    설정_일칼로리:Double;
+    cal:Double;
 
     @Column({type:'int'})
-    알림_sms:Int32;
+    alarm_sms:Int32;
 
     @Column({type:'double'})
-    시간차이:Double;
+    differtime:Double;
 
     @Column({type:'varchar'})
-    보호대상아이디:string; 
-
-    @Column({type:'varchar'})
-    보호자연락처:string; 
-
-    @Column({type:'varchar'})
-    destid1:string; 
-
-    @Column({type:'varchar'})
-    destid2:string; 
-
-    @Column({type:'varchar'})
-    destid3:string;  
+    protecteq:string; 
+    
 }

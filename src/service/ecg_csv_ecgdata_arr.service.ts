@@ -120,12 +120,13 @@ export class ecg_csv_ecgdata_arrService {
                             .where({"eq":empid})
                             .andWhere({"writetime":MoreThan(startDate)})
                             .andWhere({"writetime":LessThan(endDate)})
-                            .getRawMany()
+                            .getRawOne()
       let Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')      
-      const info = await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid)
+      const info = await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid,true)
       if(result.length != 0 && !info.includes('result')){
-       const arr = Value?.replace('[{','')       
-       const profile = info?.replace('}]',',')
+       const arr = Value?.replaceAll('{','')       
+       const profile = info?.replaceAll('}',',')
+       console.log(profile)  
        Value =  profile + arr
       }
       console.log(Value)                                                    
@@ -148,9 +149,8 @@ export class ecg_csv_ecgdata_arrService {
                       .andWhere({"writetime":LessThan(endDate)})
                       .groupBy(`MID(writetime,1,${len})`)
                       .having('COUNT(ecgpacket)')                      
-                      .getRawMany()
-      const Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')                   
-      return Value
+                      .getRawMany()      
+      return commonFun.converterJson(result)
   }catch(E){
     console.log(E)
   }
@@ -161,7 +161,7 @@ export class ecg_csv_ecgdata_arrService {
     let result
     if(endDate != ''){
       result = await this.ecg_csv_ecgdata_arrRepository.createQueryBuilder('ecg_csv_ecgdata_arr')
-                          .select('writetime')    
+                          .select('writetime,address')    
                           .where({"eq":empid})
                           .andWhere({"writetime":MoreThan(startDate)})
                           .andWhere({"writetime":LessThan(endDate)})

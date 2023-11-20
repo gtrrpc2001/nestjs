@@ -34,8 +34,9 @@ export class ecg_csv_datadayController {
 
   @Get("/test")
  async getTest(       
-   @Query('eq') eq:string): Promise<any> {       
-    return await this.ecg_csv_datadayService.monthlyCalAndDistanceData(eq,"2023-08-29","2023-08-31");
+   @Query('eq') eq:string,
+   @Query('startDate') startDate:string): Promise<any> {       
+    return ''//await this.ecg_csv_datadayService.webGraphBpmHrvArr(eq,startDate);
   }
 
 }

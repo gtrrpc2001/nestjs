@@ -18,7 +18,7 @@ export class admin_login_logController {
 
   @Get("/test")
   getTest():string{    
-    return firebasenoti.getTitle('arr',0,'US').en
+    return''
   }
 
 }

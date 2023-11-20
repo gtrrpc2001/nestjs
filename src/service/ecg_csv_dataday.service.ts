@@ -11,7 +11,8 @@ import { changeType } from 'src/clsfunc/changeType';
 @Injectable()
 export class ecg_csv_datadayService {
   ecg_raws: ecg_csv_datadayEntity[] = [];    
-  constructor(@InjectRepository(ecg_csv_datadayEntity) private ecg_csv_datadayRepository:Repository<ecg_csv_datadayEntity>){}
+  constructor(@InjectRepository(ecg_csv_datadayEntity) private ecg_csv_datadayRepository:Repository<ecg_csv_datadayEntity>,  
+  ){}
 
     table = 'ecg_csv_dataday'
     select = ''
@@ -122,13 +123,14 @@ export class ecg_csv_datadayService {
                         .andWhere({'writetime':MoreThan(startDate)})
                         .andWhere({'writetime':LessThan(endDate)})
                         .groupBy(`MID(writetime,1,${len})`)
-                        .getRawMany()
-        const Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')
-        return Value;                    
+                        .getRawMany()        
+        return commonFun.converterJson(result);                    
       }catch(E){
         console.log(E)
       }
     }
+
+    
    
 
 }
