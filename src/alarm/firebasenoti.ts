@@ -42,20 +42,10 @@ export class firebasenoti{
     }
 
    static async setPushAlarm(tokens:string[],arrStatus:string,time:string,address:string,bodystate:number,timezone:string): Promise<boolean>{
-<<<<<<< HEAD
         try{                      
          let title = this.getTitle(arrStatus,bodystate,timezone)
          let body = this.getBody(address,time,timezone)    
          console.log('성공 ' + title)
-=======
-        try{    
-         const interfaceTitle = this.getTitle(arrStatus,bodystate,timezone)
-         const interfaceBody = this.getBody(address,time)
-         const nationalCheck = !timezone?.includes('US')
-         let title = nationalCheck ? interfaceTitle.ko : interfaceTitle.en
-         let body = nationalCheck?  interfaceBody.ko : interfaceBody.en
-         console.log('여기 ' + title)
->>>>>>> aef482f90af1708492f12ebe8d235d2a6dddf541
           await admin
           .messaging()
           .sendEachForMulticast({
@@ -147,7 +137,6 @@ export class firebasenoti{
             return "Fast heart rhythm"    
         }
       }
-<<<<<<< HEAD
 
       static getChStatus(arrStatus:string):string{
         switch(arrStatus){          
@@ -162,6 +151,3 @@ export class firebasenoti{
         }
       }
 }
-=======
-}
->>>>>>> aef482f90af1708492f12ebe8d235d2a6dddf541
