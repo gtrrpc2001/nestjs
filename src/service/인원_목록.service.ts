@@ -151,7 +151,7 @@ export class 인원_목록Service {
         let condition = `a.eq = b.eq and b.phone = ${phone}`
         const result = await this.인원_목록Repository.createQueryBuilder('a')
         .select(select)
-        .leftJoin(parentsEntity,'b',condition)
+        .innerJoin(parentsEntity,'b',condition)
         .where({"eq":empid}).andWhere({"password":pw})
         .getRawOne()
 
