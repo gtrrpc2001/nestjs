@@ -32,21 +32,21 @@ export class commonQuery{
     static async getProfile(Repository:any,parentsEntity:any,empid:string,bool=false):Promise<string>{
         let boolResult = false
         try{
-            let select = 'a.아이디,a.성명,a.이메일,a.핸드폰,a.성별,a.신장,a.몸무게,a.나이,a.생년월일,a.가입일,'+
-            'a.설정_수면시작,a.설정_수면종료,a.설정_활동BPM,a.설정_일걸음,a.설정_일거리,a.설정_일활동칼로리,' +
-            'a.설정_일칼로리,a.알림_sms,a.시간차이,b.phone'
+            let select = 'a.eq,a.eqname,a.email,a.phone as userphone,a.sex,a.height,a.weight,a.age,a.birth,a.signupdate,'+
+            'a.sleeptime,a.uptime,a.bpm,a.step,a.distanceKM,a.calexe,' +
+            'a.cal,a.alarm_sms,a.differtime,b.phone'
             let result
             if(bool){
                 result = await Repository.createQueryBuilder('a')        
                 .select(select)    
-                .leftJoin(parentsEntity,'b','a.아이디 = b.eq')    
-                .where({"아이디":empid})    
+                .leftJoin(parentsEntity,'b','a.eq = b.eq')    
+                .where({"eq":empid})    
                 .getRawOne()    
             }else{
                 result = await Repository.createQueryBuilder('a')        
                 .select(select)    
-                .leftJoin(parentsEntity,'b','a.아이디 = b.eq')    
-                .where({"아이디":empid})    
+                .leftJoin(parentsEntity,'b','a.eq = b.eq')    
+                .where({"eq":empid})    
                 .getRawMany()    
             }
         console.log(result)
