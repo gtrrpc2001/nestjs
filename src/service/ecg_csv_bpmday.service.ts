@@ -116,8 +116,7 @@ export class ecg_csv_bpmdayService {
                         .select('a.writetime,a.bpm,a.hrv,b.count')
                         .leftJoin(subQuery,'b','MID(a.writetime,1,18) = MID(b.writetime,1,18)')
                         .where({"eq":empid})
-                        .andWhere({"writetime":MoreThanOrEqual(startDate)})
-                        .groupBy('writetime')
+                        .andWhere({"writetime":MoreThanOrEqual(startDate)})                        
                         .orderBy('writetime','ASC')
                         .getRawMany()        
         return commonFun.converterJson(result);                    
