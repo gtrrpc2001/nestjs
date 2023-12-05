@@ -111,7 +111,7 @@ export class ecg_csv_bpmdayService {
 
     async webGraphBpmHrvArr(empid:string,startDate:string,endDate:string): Promise<string>{
       try{        
-        const subQuery = await this.subQueryArr(empid,startDate)
+        const subQuery = await this.subQueryArr(empid,startDate,endDate)
         const result = await this.ecg_csv_bpmdayRepository.createQueryBuilder('a')
                         .select('a.writetime,a.bpm,a.hrv,b.count')
                         .leftJoin(subQuery,'b','MID(a.writetime,1,18) = MID(b.writetime,1,18)')
