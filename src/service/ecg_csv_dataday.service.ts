@@ -122,9 +122,11 @@ export class ecg_csv_datadayService {
                         .where({'eq':empid})
                         .andWhere({'writetime':MoreThan(startDate)})
                         .andWhere({'writetime':LessThan(endDate)})
-                        .groupBy(`MID(writetime,1,${len})`)
-                        .getRawMany()        
-        return commonFun.converterJson(result);                    
+                        .groupBy(`MID(writetime,${startLen},2)`)
+                        .orderBy('writetime','ASC')
+                        .getRawMany()
+        const Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')
+        return Value;                    
       }catch(E){
         console.log(E)
       }

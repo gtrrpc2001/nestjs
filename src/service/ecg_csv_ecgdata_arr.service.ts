@@ -147,10 +147,11 @@ export class ecg_csv_ecgdata_arrService {
                       .where({"eq":empid})
                       .andWhere({"writetime":MoreThan(startDate)})
                       .andWhere({"writetime":LessThan(endDate)})
-                      .groupBy(`MID(writetime,1,${len})`)
+                      .groupBy(`MID(writetime,${startLen},2)`)
                       .having('COUNT(ecgpacket)')                      
-                      .getRawMany()      
-      return commonFun.converterJson(result)
+                      .getRawMany()
+      const Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')                   
+      return Value
   }catch(E){
     console.log(E)
   }

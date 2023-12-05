@@ -16,7 +16,7 @@ export class admin_login_logService {
         .insert()
         .into(admin_login_logEntity)
         .values([{
-            구분:body.구분,아이디:body.아이디,성명:body.성명,날짜:body.날짜,활동:body.활동
+            gubun:body.구분,eq:body.아이디,eqname:body.성명,writetime:body.날짜,activity:body.활동
         }])
         .execute()
         boolResult = true

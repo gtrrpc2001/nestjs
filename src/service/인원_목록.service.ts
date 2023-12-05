@@ -120,8 +120,7 @@ export class 인원_목록Service {
     let boolResult = false
     if(isDefined(empid) && isDefined(pw) && isDefined(phone)){    
      boolResult = await this.guardianLoginCheck(empid,pw,phone)
-     console.log(`보호자앱 로그인 체크 ${boolResult}`)  
-        
+     console.log(`보호자앱 로그인 체크 ${boolResult}`)
      if(boolResult && isDefined(token)){
         console.log('여기 ' + token )
         const parentsResult = await this.tokenUpdateGuardianApp(empid,phone,token)
@@ -151,10 +150,10 @@ export class 인원_목록Service {
         let condition = `a.eq = b.eq and b.phone = ${phone}`
         const result = await this.인원_목록Repository.createQueryBuilder('a')
         .select(select)
-        .leftJoin(parentsEntity,'b',condition)
+        .innerJoin(parentsEntity,'b',condition)
         .where({"eq":empid}).andWhere({"password":pw})
         .getRawOne()
-
+        
         if(!isDefined(result))
             return false;
 

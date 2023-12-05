@@ -7,17 +7,17 @@ export class admin_login_logEntity{
     idx: number;
 
     @Column({type:'varchar'})
-    구분:string;
+    gubun:string;
 
     @Column({type:'varchar'})
-    아이디:string;
+    eq:string;
 
     @Column({type:'varchar'})
-    성명:string;
+    eqname:string;
 
-    @Column({type:'datetime'})
-    날짜:string;
+    @Column({type:'date'})
+    writetime:string;
     
     @Column({type:'varchar'})
-    활동:string;
+    activity:string;
 }

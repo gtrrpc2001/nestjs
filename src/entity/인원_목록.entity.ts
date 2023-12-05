@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, Double, Int32 } from 'typeorm';
 
-@Entity('인원_목록')
+@Entity('user')
 export class 인원_목록Entity{
 
     @PrimaryGeneratedColumn()

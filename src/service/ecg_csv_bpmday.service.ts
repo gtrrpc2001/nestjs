@@ -109,15 +109,15 @@ export class ecg_csv_bpmdayService {
       }
     }
 
-    async webGraphBpmHrvArr(empid:string,startDate:string): Promise<string>{
+    async webGraphBpmHrvArr(empid:string,startDate:string,endDate:string): Promise<string>{
       try{        
-        const subQuery = await this.subQueryArr(empid,startDate)
+        const subQuery = await this.subQueryArr(empid,startDate,endDate)
         const result = await this.ecg_csv_bpmdayRepository.createQueryBuilder('a')
                         .select('a.writetime,a.bpm,a.hrv,b.count')
                         .leftJoin(subQuery,'b','MID(a.writetime,1,18) = MID(b.writetime,1,18)')
                         .where({"eq":empid})
                         .andWhere({"writetime":MoreThanOrEqual(startDate)})
-                        .groupBy('writetime')
+                        .andWhere({"writetime":LessThan(endDate)})                        
                         .orderBy('writetime','ASC')
                         .getRawMany()        
         return commonFun.converterJson(result);                    
@@ -127,7 +127,7 @@ export class ecg_csv_bpmdayService {
 
     }
 
-    async subQueryArr(eq:string,writetime:string): Promise<string>{
+    async subQueryArr(eq:string,writetime:string,endDate:string): Promise<string>{
       const subSelect = 'COUNT(ecgpacket) COUNT,writetime'
       try{
         const result = await this.ecg_csv_ecgdata_arrRepository.createQueryBuilder()
@@ -135,7 +135,8 @@ export class ecg_csv_bpmdayService {
         .select(subSelect)
         .from(ecg_csv_ecgdata_arrEntity,'')
         .where(`eq = '${eq}'`)
-        .andWhere(`writetime >= '${writetime}'`)          
+        .andWhere(`writetime >= '${writetime}'`)
+        .andWhere(`writetime < '${endDate}'`)
         .groupBy('writetime')
         .having('COUNT(ecgpacket)')          
         .getQuery()
