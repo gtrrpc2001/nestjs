@@ -6,7 +6,7 @@ import { ecg_csv_ecgdataDTO } from "src/dto/ecg_csv_ecgdata.dto";
 import { commonFun } from 'src/clsfunc/commonfunc';
 import { commonQuery } from 'src/clsfunc/commonQuery';
 import { ecg_raw_history_lastEntity } from 'src/entity/ecg_raw_history_last.entity';
-import { MoreThanOrEqual } from 'typeorm';
+import { MoreThanOrEqual,LessThan,LessThanOrEqual } from 'typeorm';
 
 
 @Injectable()
