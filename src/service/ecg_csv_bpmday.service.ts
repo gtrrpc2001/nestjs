@@ -117,7 +117,11 @@ export class ecg_csv_bpmdayService {
                         .leftJoin(subQuery,'b','MID(a.writetime,1,18) = MID(b.writetime,1,18)')
                         .where({"eq":empid})
                         .andWhere({"writetime":MoreThanOrEqual(startDate)})
+<<<<<<< HEAD
                         .andWhere({"writetime":LessThan(endDate)})                        
+=======
+                        .andWhere({"writetime":LessThan(endDate)})
+>>>>>>> b1e1e4ad61cd360b165d731987a755086949ae1f
                         .orderBy('writetime','ASC')
                         .getRawMany()        
         return commonFun.converterJson(result);                    

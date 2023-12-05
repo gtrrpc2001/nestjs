@@ -102,7 +102,11 @@ try{
     return Value;    
     } 
 
+<<<<<<< HEAD
     async getEcgTime(empid:string,startDate:string,endDate:string): Promise<string[]>{        
+=======
+  async getEcgTime(empid:string,startDate:string,endDate:string): Promise<string[]>{        
+>>>>>>> b1e1e4ad61cd360b165d731987a755086949ae1f
         try{
            const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
                                 .select('Mid(writetime,12,4) writetime')                                
@@ -136,6 +140,10 @@ try{
         }                 
       
      }
+<<<<<<< HEAD
+=======
+
+>>>>>>> b1e1e4ad61cd360b165d731987a755086949ae1f
 }
 
 
