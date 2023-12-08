@@ -45,5 +45,9 @@ export class ecg_csv_ecgdataController {
    ): Promise<string[]> {       
     return await this.ecg_csv_ecgdataService.getGraphEcgValue(eq,startDate,endDate);
   }
+<<<<<<< HEAD
 
 }
+=======
+}
+>>>>>>> ae1aeedc2adfe81c4b267b308c5b37a054f26849
