@@ -23,11 +23,11 @@ export class 인원_목록Service {
   async gubunKind(body:인원_목록DTO): Promise<any>{   
     switch(body.kind){
         case "checkIDDupe" :
-            return this.checkIDDupe(body.아이디);
+            return this.checkIDDupe(body.eq);
         case "checkLogin" :
-            return this.checkLogin(body.아이디,body.패스워드키,null,null)
+            return this.checkLogin(body.eq,body.password,null,null)
         case "getProfile" :
-            return this.getProfile(body.아이디)
+            return this.getProfile(body.eq)
         case "checkReg" :
             return this.checkReg(body)
         case "setProfile" :
@@ -47,12 +47,12 @@ export class 인원_목록Service {
         const result = await this.인원_목록Repository.createQueryBuilder()
         .update(인원_목록Entity)        
         .set({
-            "eq":body.성명,"email":body.이메일,"phone":body.핸드폰,"sex":body.성별,"height":body.신장,"weight":body.몸무게,
-            "age":body.나이,"birth":body.생년월일,"sleeptime":body.설정_수면시작,"uptime":body.설정_수면종료,"bpm":body.설정_활동BPM,
-            "step":body.설정_일걸음,"distanceKM":body.설정_일거리,"calexe":body.설정_일활동칼로리,"cal":body.설정_일칼로리,
-            "alarm_sms":body.알림_sms,"differtime":body.시간차이
+            "eqname":body.eqname,"email":body.email,"phone":body.phone,"sex":body.sex,"height":body.height,"weight":body.weight,
+            "age":body.age,"birth":body.birth,"sleeptime":body.sleeptime,"uptime":body.uptime,"bpm":body.bpm,
+            "step":body.step,"distanceKM":body.distanceKM,"cal":body.cal,"calexe":body.calexe,
+            "alarm_sms":body.alarm_sms,"differtime":body.differtime
         })
-        .where({"eq":body.아이디})
+        .where({"eq":body.eq})
         .execute()
         boolResult = true
         var jsonValue = 'result = ' + boolResult.toString()
@@ -74,11 +74,11 @@ export class 인원_목록Service {
            .insert()
            .into(ecg_raw_history_lastEntity)
            .values([{
-                eq:body.아이디,eqname:body.성명,writetime:datatime
+                eq:body.eq,eqname:body.eqname,writetime:datatime
            }])
            .execute()
 
-           console.log(`${body.아이디}--${body.성명}`)
+           console.log(`${body.eq}--${body.eqname}`)
             boolResult = true;
         }
         var jsonValue = 'result = ' + boolResult.toString()
@@ -96,11 +96,10 @@ export class 인원_목록Service {
         .insert()
         .into(인원_목록Entity)
         .values([{
-            eq:body.아이디,password:body.패스워드키,eqname:body.성명,email:body.이메일,phone:body.핸드폰,
-            sex:body.성별,height:body.신장,weight:body.몸무게,age:body.나이,birth:body.생년월일,
-            sleeptime:body.설정_수면시작,uptime:body.설정_수면종료,bpm:body.설정_활동BPM,
-            step:body.설정_일걸음,distanceKM:body.설정_일거리,calexe:body.설정_일활동칼로리,
-            cal:body.설정_일칼로리,alarm_sms:body.알림_sms,differtime:body.시간차이
+            eq:body.eq,password:body.password,eqname:body.eqname,email:body.email,phone:body.phone,sex:body.sex,
+            height:body.height,weight:body.weight,age:body.age,birth:body.birth,sleeptime:body.sleeptime,
+            uptime:body.uptime,bpm:body.bpm,step:body.step,distanceKM:body.distanceKM,
+            cal:body.cal,calexe:body.calexe,alarm_sms:body.alarm_sms,differtime:body.differtime
         }])
         .execute()        
         return true
@@ -120,7 +119,8 @@ export class 인원_목록Service {
     let boolResult = false
     if(isDefined(empid) && isDefined(pw) && isDefined(phone)){    
      boolResult = await this.guardianLoginCheck(empid,pw,phone)
-     console.log(`보호자앱 로그인 체크 ${boolResult}`)
+     console.log(`보호자앱 로그인 체크 ${boolResult}`)  
+        
      if(boolResult && isDefined(token)){
         console.log('여기 ' + token )
         const parentsResult = await this.tokenUpdateGuardianApp(empid,phone,token)
@@ -153,10 +153,11 @@ export class 인원_목록Service {
         .innerJoin(parentsEntity,'b',condition)
         .where({"eq":empid}).andWhere({"password":pw})
         .getRawOne()
-        
+
         if(!isDefined(result))
             return false;
 
+        console.log(`여기 테스트 ${result}`)
         return result.length != 0 ? true : false
     }catch(E){
         console.log(E)
@@ -233,8 +234,8 @@ export class 인원_목록Service {
     try{        
         const result = await this.인원_목록Repository.createQueryBuilder()
         .update(인원_목록Entity)        
-        .set({ "password":body.패스워드키})
-        .where({"eq":body.아이디})
+        .set({ "password":body.password})
+        .where({"eq":body.eq})
         .execute()
         boolResult = true
         var jsonValue = 'result = ' + boolResult.toString()

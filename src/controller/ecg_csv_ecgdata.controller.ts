@@ -42,6 +42,8 @@ export class ecg_csv_ecgdataController {
    @Query('eq') eq:string,
    @Query('startDate') startDate:string,
    @Query('endDate') endDate:string,
-   ): Promise<number[]> {       
+   ): Promise<string[]> {       
     return await this.ecg_csv_ecgdataService.getGraphEcgValue(eq,startDate,endDate);
   }
+
+}

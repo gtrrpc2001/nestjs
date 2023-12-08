@@ -101,9 +101,8 @@ try{
     const Value = (result.length != 0 && empid != null)? commonFun.convertCsv(commonFun.converterJson(result)) : commonFun.converterJson('result = ' + '0')
     return Value;    
     } 
-  
-  async getEcgTime(empid:string,startDate:string,endDate:string): Promise<string[]>{        
 
+    async getEcgTime(empid:string,startDate:string,endDate:string): Promise<string[]>{        
         try{
            const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
                                 .select('Mid(writetime,12,4) writetime')                                
@@ -120,21 +119,22 @@ try{
       
      }
 
-     async getGraphEcgValue(empid:string,startDate:string,endDate:string): Promise<number[]>{        
+     async getGraphEcgValue(empid:string,startDate:string,endDate:string): Promise<string[]>{        
         try{
            const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
-                                .select('ecgpacket')                                
+                                .select('writetime,ecgpacket')                                
                                 .where({"eq":empid})
                                 .andWhere({"writetime":MoreThanOrEqual(startDate)})
                                 .andWhere({"writetime":LessThanOrEqual(endDate)})                                
-                                .getRawMany()                    
-          console.log(empid)                  
+                                .getRawMany()                                               
           const changeEcg:number[] = await commonFun.getEcgNumArr(result)  
-          const Value = (result.length != 0 && empid != null)? changeEcg : [0]                                
-          return Value;    
+        //   const Value = (result.length != 0 && empid != null)? changeEcg : [0]                                
+          return result;    
         } catch(E){
             console.log(E)
         }                 
       
      }
 }
+
+
