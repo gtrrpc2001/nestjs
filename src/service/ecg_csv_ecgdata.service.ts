@@ -119,17 +119,17 @@ try{
       
      }
 
-     async getGraphEcgValue(empid:string,startDate:string,endDate:string): Promise<string[]>{        
+     async getGraphEcgValue(empid:string,startDate:string,endDate:string): Promise<number[]>{        
         try{
            const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
-                                .select('writetime,ecgpacket')                                
+                                .select('ecgpacket')                                
                                 .where({"eq":empid})
                                 .andWhere({"writetime":MoreThanOrEqual(startDate)})
                                 .andWhere({"writetime":LessThanOrEqual(endDate)})                                
                                 .getRawMany()                                               
           const changeEcg:number[] = await commonFun.getEcgNumArr(result)  
         //   const Value = (result.length != 0 && empid != null)? changeEcg : [0]                                
-          return result;    
+          return changeEcg;    
         } catch(E){
             console.log(E)
         }                 
