@@ -21,7 +21,6 @@ export class ecg_raw_history_lastController {
   }
 
   @Get("/webTable")
-<<<<<<< HEAD
  async getTableListValue(
   @Query('eq') eq:Array<string>
  ): Promise<any> {       
