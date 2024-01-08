@@ -42,29 +42,18 @@ export class ecg_raw_history_lastService {
     
     
     
-<<<<<<< HEAD
-    async gethistory_last(eq:Array<string>): Promise<string>{
+async gethistory_last(eq:Array<string>): Promise<string>{
       const select = 'a.idx,a.eq,eqname,a.bpm,a.hrv,mid(a.temp,1,5) temp,'+
       'b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone,'+
       'a.writetime,'+
       'case '+
       "when MID(a.timezone,1,1) = '-' then DATE_ADD(a.writetime,INTERVAL cast(MID(a.timezone,2,2) AS unsigned) + 9 HOUR)"+
       " when MID(a.timezone,1,1) = '+' AND cast(MID(a.timezone,2,2) AS UNSIGNED) < 9 AND a.timezone NOT LIKE '%KR%' then DATE_ADD(a.writetime,INTERVAL 9 - cast(MID(a.timezone,2,2) AS unsigned) HOUR)" +
-=======
-    async gethistory_last(): Promise<string>{
-      const select = 'a.idx,a.eq,eqname,a.bpm,a.hrv,mid(a.temp,1,5) temp,'+
-      'b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone,'+
-      'a.writetime,'+
-      'case '+ 
-      "when MID(a.timezone,1,1) = '-' then DATE_ADD(a.writetime,INTERVAL cast(MID(a.timezone,2,2) AS unsigned) + 9 HOUR)"+
-      " when MID(a.timezone,1,1) = '+' and cast(MID(a.timezone,2,2) AS UNSIGNED) < 9 then DATE_ADD(a.writetime,INTERVAL 9 - cast(MID(a.timezone,2,2) AS unsigned) HOUR)" +
->>>>>>> 5fa4d26c8137199d850b4a0a215f844eb99fbd96
       " when MID(a.timezone,1,1) = '+' AND cast(MID(a.timezone,2,2) AS UNSIGNED) > 9 then DATE_SUB(a.writetime,INTERVAL 9 - cast(MID(a.timezone,2,2) AS UNSIGNED) HOUR)"+
       ' ELSE a.writetime END'+
       ' AS changeTime'            
       try{
         const subQuery = await this.subQueryDataDay()
-<<<<<<< HEAD
         let result
         if(eq.length != 0){
            result = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
@@ -80,13 +69,6 @@ export class ecg_raw_history_lastService {
           .orderBy('changeTime' ,'DESC')   
           .getRawMany()
         }
-=======
-        const result = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
-        .select(select)         
-        .leftJoin(subQuery,'b','a.eq = b.eq AND Mid(a.writetime,1,10) = b.writetime')
-        .orderBy('changeTime' ,'DESC')   
-        .getRawMany()  
->>>>>>> 5fa4d26c8137199d850b4a0a215f844eb99fbd96
         
         const Value = (result.length != 0)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')       
         
