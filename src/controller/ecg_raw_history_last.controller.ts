@@ -22,8 +22,7 @@ export class ecg_raw_history_lastController {
 
   @Get("/webTable")
  async getTableListValue(
-  @Query('eq') eq:Array<string>
  ): Promise<any> {       
-    return await this.ecg_raw_history_lastService.gethistory_last(eq);
+    return await this.ecg_raw_history_lastService.gethistory_last();
  }
 }
