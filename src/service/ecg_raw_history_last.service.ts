@@ -1,7 +1,7 @@
 import { ecg_raw_history_lastEntity } from "src/entity/ecg_raw_history_last.entity";
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository,MoreThanOrEqual,MoreThan } from 'typeorm';
+import { Repository,MoreThanOrEqual,MoreThan,In } from 'typeorm';
 import { ecg_raw_history_lastDTO } from "../dto/ecg_raw_history_last.dto";
 import { commonFun } from 'src/clsfunc/commonfunc';
 import { ecg_csv_datadayEntity } from "src/entity/ecg_csv_dataday.entity";
@@ -42,35 +42,51 @@ export class ecg_raw_history_lastService {
     
     
     
-    async gethistory_last(writetime:string): Promise<string>{
-      const select = 'a.idx,a.eq,eqname,a.writetime,a.bpm,a.hrv,mid(a.temp,1,5) temp,b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone'              
+    async gethistory_last(eq:Array<string>): Promise<string>{
+      const select = 'a.idx,a.eq,eqname,a.bpm,a.hrv,mid(a.temp,1,5) temp,'+
+      'b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone,'+
+      'a.writetime,'+
+      'case '+
+      "when MID(a.timezone,1,1) = '-' then DATE_ADD(a.writetime,INTERVAL cast(MID(a.timezone,2,2) AS unsigned) + 9 HOUR)"+
+      " when MID(a.timezone,1,1) = '+' AND cast(MID(a.timezone,2,2) AS UNSIGNED) < 9 AND a.timezone NOT LIKE '%KR%' then DATE_ADD(a.writetime,INTERVAL 9 - cast(MID(a.timezone,2,2) AS unsigned) HOUR)" +
+      " when MID(a.timezone,1,1) = '+' AND cast(MID(a.timezone,2,2) AS UNSIGNED) > 9 then DATE_SUB(a.writetime,INTERVAL 9 - cast(MID(a.timezone,2,2) AS UNSIGNED) HOUR)"+
+      ' ELSE a.writetime END'+
+      ' AS changeTime'            
       try{
-        const subQuery = await this.subQueryDataDay(writetime)
-        const result: ecg_raw_history_lastEntity[] = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
-        .select(select)         
-        .leftJoin(subQuery,'b','a.eq = b.eq')
-        .orderBy('writetime' ,'DESC')   
-        .getRawMany()  
+        const subQuery = await this.subQueryDataDay()
+        let result
+        if(eq.length != 0){
+           result = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
+          .select(select)         
+          .leftJoin(subQuery,'b','a.eq = b.eq AND Mid(a.writetime,1,10) = b.writetime')          
+          .where({"eq":In(eq)})
+          .orderBy('changeTime' ,'DESC')   
+          .getRawMany()  
+        }else{
+          result = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
+          .select(select)         
+          .leftJoin(subQuery,'b','a.eq = b.eq AND Mid(a.writetime,1,10) = b.writetime')          
+          .orderBy('changeTime' ,'DESC')   
+          .getRawMany()
+        }
         
-        const Value = (result.length != 0 && writetime != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')       
+        const Value = (result.length != 0)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')       
         
         return Value;
       }catch(E){
         console.log(E)
-      }
+      }      
+    }
       
-      }
-      
-     async subQueryDataDay(writetime:string): Promise<string>{
-        const subSelect = 'eq ,sum(step) step,sum(distanceKM) distanceKM,sum(cal) cal,sum(calexe) calexe,sum(arrcnt) arrcnt'
+     async subQueryDataDay(): Promise<string>{
+        const subSelect = 'eq ,Mid(writetime,1,10) writetime,sum(step) step,sum(distanceKM) distanceKM,sum(cal) cal,sum(calexe) calexe,sum(arrcnt) arrcnt'
         try{
           
           const result = await this.ecg_csv_datadayRepository.createQueryBuilder()
           .subQuery()
           .select(subSelect)
-          .from(ecg_csv_datadayEntity,'')
-          .where(`writetime >= '${writetime}'`)          
-          .groupBy('eq')          
+          .from(ecg_csv_datadayEntity,'')                    
+          .groupBy('eq,Mid(writetime,1,10)')          
           .getQuery()          
 
           return result

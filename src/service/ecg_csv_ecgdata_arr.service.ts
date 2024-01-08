@@ -4,22 +4,23 @@ import { Repository } from 'typeorm';
 import { ecg_csv_ecgdataDTO } from "src/dto/ecg_csv_ecgdata.dto";
 import { ecg_csv_ecgdata_arrEntity } from 'src/entity/ecg_csv_ecgdata_arr.entity';
 import { commonFun } from 'src/clsfunc/commonfunc';
-import { MoreThan,LessThan,In } from 'typeorm';
+import { MoreThan,LessThan,Between } from 'typeorm';
 import { commonQuery } from 'src/clsfunc/commonQuery';
 import { parentsEntity } from 'src/entity/parents.entity';
 import { firebasenoti } from 'src/alarm/firebasenoti';
-import { isDefined } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-import { 인원_목록Service } from './인원_목록.service';
 import { 인원_목록Entity } from 'src/entity/인원_목록.entity';
+import { ecg_csv_ecgdataEntity } from 'src/entity/ecg_csv_ecgdata.entity';
 
 @Injectable()
-export class ecg_csv_ecgdata_arrService {
+export class ecg_csv_ecgdata_arrService { 
+  
   ecg_raws: ecg_csv_ecgdata_arrEntity[] = [];    
   constructor(
     @InjectRepository(ecg_csv_ecgdata_arrEntity) private ecg_csv_ecgdata_arrRepository:Repository<ecg_csv_ecgdata_arrEntity>,
     @InjectRepository(parentsEntity) private parentsRepository:Repository<parentsEntity>,   
     @InjectRepository(인원_목록Entity) private 인원_목록Repository:Repository<인원_목록Entity>, 
+    @InjectRepository(ecg_csv_ecgdataEntity) private ecg_csv_ecgdataRepository:Repository<ecg_csv_ecgdataEntity>,
     private configService:ConfigService
     ){}
 
@@ -113,17 +114,28 @@ export class ecg_csv_ecgdata_arrService {
     
    }
 
-   async countArr (empid:string,startDate:string,endDate:string): Promise<string>{        
+   async onlyArrCount(empid:string,startDate:string,endDate:string): Promise<string>{
     try{
-       const result = await this.ecg_csv_ecgdata_arrRepository.createQueryBuilder('ecg_csv_ecgdata_arr')
-                            .select('count(eq) as arrCnt')                                
-                            .where({"eq":empid})
-                            .andWhere({"writetime":MoreThan(startDate)})
-                            .andWhere({"writetime":LessThan(endDate)})
-                            .getRawOne()
-      let Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')      
+      const result = await this.ecg_csv_ecgdata_arrRepository.createQueryBuilder('ecg_csv_ecgdata_arr')
+                              .select('count(eq) as arrCnt')                                
+                              .where({"eq":empid})
+                              .andWhere({"writetime":MoreThan(startDate)})
+                              .andWhere({"writetime":LessThan(endDate)})
+                              .getRawOne()
+        console.log(result)
+        let Value = (result.length != 0 && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')      
+        return Value;
+    }catch(E){
+      console.log(E)
+      return commonFun.converterJson('result = ' + '0');
+    }
+   }
+
+   async countArr (empid:string,startDate:string,endDate:string): Promise<string>{        
+    try{       
+      let Value = await this.onlyArrCount(empid,startDate,endDate)
       const info = await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid,true)
-      if(result.length != 0 && !info.includes('result')){
+      if(!Value.includes('result') && !info.includes('result')){
        const arr = Value?.replaceAll('{','')       
        const profile = info?.replaceAll('}',',')
        console.log(profile)  
@@ -210,4 +222,40 @@ export class ecg_csv_ecgdata_arrService {
       }                 
     
    } 
+
+   async arrPreEcgData (eq:string,date:string): Promise<string>{
+    try{              
+      const subQuery = await this.subQueryArr(eq,date)
+      const result = await this.ecg_csv_ecgdata_arrRepository.createQueryBuilder('a')
+                                .select('b.ecgpacket ecg , a.ecgpacket arr')   
+                                .leftJoin(subQuery,'b','a.eq = b.eq AND b.writetime BETWEEN DATE_SUB(a.writetime,INTERVAL 4 SECOND) AND DATE_SUB(a.writetime,INTERVAL 2 SECOND)')
+                                .where({"eq":eq})
+                                .andWhere({"writetime":date})
+                                .getRawMany()
+      const Value = (result.length != 0 && eq != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')   
+      return Value;                           
+    }catch(E){
+      console.log(E)
+    }
+   }
+
+   async subQueryArr(eq:string,writetime:string): Promise<string>{
+    const subSelect = 'eq,writetime,ecgpacket'
+    const onlyDate = writetime.split(' ')[0]
+    try{
+      const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder()
+      .subQuery()
+      .select(subSelect)
+      .from(ecg_csv_ecgdataEntity,'')
+      .where(`eq = '${eq}'`)
+      .andWhere(`writetime <= '${writetime}'`)
+      .andWhere(`writetime >= '${onlyDate}'`)
+      .orderBy('writetime','DESC')
+      .limit(6)
+      .getQuery()
+      return result
+    }catch(E){
+      console.log(E)
+    }
+  }
 }

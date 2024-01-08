@@ -150,8 +150,4 @@ export class firebasenoti{
             return "检测到心率偏高!"    
         }
       }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> ae1aeedc2adfe81c4b267b308c5b37a054f26849

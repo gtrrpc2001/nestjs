@@ -25,6 +25,7 @@ export class ecg_byteService {
   async insertEcgPacket(body:ecg_byteDTO): Promise<string>{
     // var boolResult = false
     try{          
+      // console.log(body.ecgPacket)
         const result = await this.setInsert(body)
         
         // if(result){            
@@ -58,15 +59,15 @@ export class ecg_byteService {
 
 
   async setInsert(body:ecg_byteDTO): Promise<boolean>{
-    try{               
-        const buffer = commonFun.getEcgBuffer(body.ecgPacket);
+    try{
+         const buffer = commonFun.getEcgBuffer(body.ecgPacket);         
+        // ecgpacket:() => `HEX(AES_ENCRYPT('${body.ecgPacket}','${key}'))`
         const result = await this.ecg_byteRepository.createQueryBuilder()
         .insert()
         .into(ecg_byteEntity)
         .values([{
             eq:body.eq,writetime:body.writetime,timezone:body.timezone,bpm:body.bpm,
-            ecgpacket:buffer
-            // ecgpacket:() => `HEX(AES_ENCRYPT('${body.ecgPacket}','${key}'))`
+            ecgpacket:buffer           
         }])
         .execute()
         return true
@@ -84,11 +85,7 @@ export class ecg_byteService {
                                 .andWhere({"writetime":MoreThanOrEqual(startDate)})
                                 .andWhere({"writetime":LessThanOrEqual(endDate)})                                
                                 .getRawMany()
-            const value = result.map(d => async function(){
-                                    const {writetime,ecgpacket} = d                                                                         
-                                    const ecg = commonFun.getEcgNumber(ecgpacket)
-                                    return {writetime,ecg}
-                                });                                                                               
+            const value = await this.getChangeValue(result)
         // .select(`writetime,AES_DECRYPT(UNHEX(ecgpacket), ${key}) ecgpacket`)                                
         //   const changeEcg:number[] = await commonFun.getEcgNumArr(result)  
         //   const Value = (result.length != 0 && empid != null)? changeEcg : [0]                                
@@ -96,6 +93,16 @@ export class ecg_byteService {
         } catch(E){
             console.log(E)
         }         
+    }
+
+    async getChangeValue(result: any[]){
+     return result.map(d => {
+        const {writetime,ecgpacket} = d                                     
+        const ecg = commonFun.getEcgNumber(ecgpacket)                                     
+        // const _ecg = ecg.filter((d:number) => d < 1100 && d > 200)
+        // console.log(_ecg.length)
+        return {writetime,ecg}
+    });
     }
 
 //   async getEcg (empid:string,startDate:string): Promise<number[]>{        

@@ -7,18 +7,18 @@ export class admin_login_logDTO{
 
     @IsString()
     @IsOptional()
-    readonly 구분:string;
+    readonly gubun:string;
     
     @IsString()    
-    readonly 아이디:string;
+    readonly eq:string;
     
     @IsString()
     @IsOptional()
-    readonly 성명:string;
+    readonly eqname:string;
 
     @IsString()    
-    readonly 날짜:string;
+    readonly writetime:string;
     
     @IsString()    
-    readonly 활동:string;
+    readonly activity:string;
 }
