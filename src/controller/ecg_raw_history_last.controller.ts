@@ -24,6 +24,11 @@ export class ecg_raw_history_lastController {
  async getTableListValue(
  ): Promise<any> {       
     return await this.ecg_raw_history_lastService.gethistory_last();
+<<<<<<< HEAD
   }
 
 }
+=======
+ }
+}
+>>>>>>> ffcfbf797efd9e721a2d351417d10c3007ae2403

@@ -20,4 +20,9 @@ export class admin_login_logEntity{
     
     @Column({type:'varchar'})
     activity:string;
+<<<<<<< HEAD
 }
+=======
+
+}
+>>>>>>> ffcfbf797efd9e721a2d351417d10c3007ae2403
