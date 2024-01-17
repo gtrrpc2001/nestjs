@@ -73,6 +73,19 @@ import { parentsEntity } from 'src/entity/parents.entity';
       return changeEcg
       }
 
+      static async getFromStringToNumberArrEcg(ecg:string): Promise<number[]>{
+        const changeEcg:number[] =[]                         
+        const after = ecg?.replaceAll(';','')                                
+        after?.split('][').forEach((data:string) => {
+                  const sliceEcg = data?.replaceAll('[','')?.replaceAll(']','')?.split(',')
+                  sliceEcg.forEach(d => {                            
+                  changeEcg.push(Number(d))
+                  
+              })
+          })   
+        return changeEcg
+      }
+
      static getStartLen(len:number):number{
         switch(len){
           case 10 :
@@ -84,16 +97,17 @@ import { parentsEntity } from 'src/entity/parents.entity';
         }
      }
 
-   static getEcgBuffer(ecg:number[]):Buffer{
-      const uint32Array = new Uint16Array(ecg);
-      const arrBuffer = uint32Array.buffer
-      return Buffer.from(arrBuffer)
+     static getEcgBuffer(ecg:number[]):Buffer{  
+      const uint16Array = new Uint16Array(ecg);      
+      const arrBuffer = uint16Array.buffer  
+      const buffer = Buffer.from(arrBuffer)                
+      return buffer
     }
   
-    static getEcgNumber(ecg:Buffer):number[]{      
-      const uint8Arr = new Uint8Array(ecg)
-      const uint32Arr = new Uint16Array(uint8Arr.buffer);      
-      const newArr = [...uint32Arr]
+    static getEcgNumber(ecg:Buffer):number[]{             
+      const uint8Arr =  new Uint8Array(ecg);        
+      const uint16Arr = new Uint16Array(uint8Arr.buffer);                      
+      const newArr = [...uint16Arr] 
       return newArr
     }
     

@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository ,MoreThanOrEqual,LessThanOrEqual} from 'typeorm';
+import { Repository ,MoreThanOrEqual,LessThanOrEqual,MoreThan,LessThan} from 'typeorm';
 import { commonFun } from "src/clsfunc/commonfunc";
 import { ecg_byteEntity } from 'src/entity/ecg_byte.entity';
 import { ecg_byteDTO } from 'src/dto/ecg_byte.dto';
+import { ecg_csv_ecgdataEntity } from 'src/entity/ecg_csv_ecgdata.entity';
+import { ecg_raw_history_lastEntity } from 'src/entity/ecg_raw_history_last.entity';
 
 @Injectable()
 export class ecg_byteService {  
-  constructor(@InjectRepository(ecg_byteEntity) private ecg_byteRepository:Repository<ecg_byteEntity>
+  constructor(
+    @InjectRepository(ecg_byteEntity) private ecg_byteRepository:Repository<ecg_byteEntity>,
+  @InjectRepository(ecg_csv_ecgdataEntity) private ecg_csv_ecgdataRepository:Repository<ecg_csv_ecgdataEntity>,
+  @InjectRepository(ecg_raw_history_lastEntity) private ecg_raw_history_lastRepository:Repository<ecg_raw_history_lastEntity>
   ){}
 
   table = 'ecg_csv_ecgdata'
@@ -23,40 +28,37 @@ export class ecg_byteService {
   }
 
   async insertEcgPacket(body:ecg_byteDTO): Promise<string>{
-    // var boolResult = false
+    var boolResult = false
     try{          
       // console.log(body.ecgPacket)
         const result = await this.setInsert(body)
         
-        // if(result){            
-        //     boolResult = await this.updateLast(body)
-        // }
+        if(result){            
+            boolResult = await this.updateLast(body)
+        }
         console.log('ecgByteinsert')
-        // var jsonValue = 'result = ' + boolResult.toString()
-        var jsonValue = 'result = ' + result.toString()
+        var jsonValue = 'result = ' + boolResult.toString()        
         return commonFun.converterJson(jsonValue);
     }catch(E){
         //console.log(E) 
         return E;
     } 
-  }
+  }  
 
-//   async updateLast(body:ecg_csv_ecgdataDTO): Promise<boolean>{    
-// try{        
-//     const result = await this.ecg_raw_history_lastRepository.createQueryBuilder()
-//     .update(ecg_raw_history_lastEntity)        
-//     .set({ "writetime":body.writetime,"bpm":body.bpm})
-//     .where({"eq":body.eq})
-//     .execute()        
-//     console.log('updateLast')
-//     return true;
-// }catch(E){
-//     //console.log(E) 대기열 문제 가끔 발생
-//     return false;
-// }             
-// }
-
-
+  async updateLast(body:ecg_byteDTO): Promise<boolean>{    
+    try{        
+        const result = await this.ecg_raw_history_lastRepository.createQueryBuilder()
+        .update(ecg_raw_history_lastEntity)        
+        .set({ "writetime":body.writetime,"bpm":body.bpm})
+        .where({"eq":body.eq})
+        .execute()        
+        console.log('updateLast')
+        return true;
+    }catch(E){
+        //console.log(E) 대기열 문제 가끔 발생
+        return false;
+    }             
+}
 
   async setInsert(body:ecg_byteDTO): Promise<boolean>{
     try{
@@ -103,63 +105,105 @@ export class ecg_byteService {
         // console.log(_ecg.length)
         return {writetime,ecg}
     });
-    }
+  }
 
-//   async getEcg (empid:string,startDate:string): Promise<number[]>{        
-//     try{
-//        const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
-//                             .select('ecgpacket')                                
-//                             .where({"eq":empid})
-//                             .andWhere({"writetime":MoreThanOrEqual(startDate)})
-//                             .getRawMany()
-//       const changeEcg:number[] = await commonFun.getEcgNumArr(result)      
-//       const Value = (result.length != 0 && empid != null)? changeEcg : [0]
-//       console.log(empid)                                                    
-//       return Value;    
-//     } catch(E){
-//         console.log(E)
-//     }                 
+  async getEcgChangeValue(result: any[]):Promise<number[]>{
+    let ecgArr:number[] = []    
+    result.map(d => {
+       const {ecgpacket} = d                                     
+       const ecg = commonFun.getEcgNumber(ecgpacket)
+       ecg.map(d => {
+         ecgArr.push(d)
+       })      
+   });
+    return ecgArr;
+ }
+
+  async EcgToByte (idx:number,limit:number): Promise<number>{        
+    let index = 0;
+    try{        
+        const result:ecg_csv_ecgdataEntity[] = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
+                              .select('*')                                
+                              .where({"idx":MoreThan(index == 0 ? idx : index)})
+                              .orderBy("idx","ASC")
+                              .limit(limit)                            
+                              .getRawMany()
+        if(result.length != 0){        
+          for(var i = 0; i < result.length; i++){
+            const dR = result[i]
+            index = dR.idx
+            const eq = dR.eq
+            const writetime = dR.writetime
+            const timezone = dR.timezone
+            const bpm = Number(dR.bpm)
+            const ecg = dR.ecgpacket
+            const changeEcg:number[] = await commonFun.getFromStringToNumberArrEcg(ecg)          
+            const b:ecg_byteDTO = {"kind":"ecgByteInsert","eq":eq,"writetime":writetime,"timezone":timezone,"bpm":bpm,"ecgPacket":changeEcg}
+            await this.setInsert(b)
+            console.log(index)
+          }
   
-//  }
+        }                                                         
+      return index;    
+    } catch(E){
+        console.log(E)
+      return index;
+    }                
+  
+ }
 
-//    async ecgPacket(empid:string,startDate:string,endDate:string): Promise<string>{    
-//     console.log('ecgPacket')       
-//     const result = await commonQuery.whereIfResult(this.ecg_csv_ecgdataRepository,this.table,this.select,empid,startDate,endDate);  
-//     const Value = (result.length != 0 && empid != null)? commonFun.convertCsv(commonFun.converterJson(result)) : commonFun.converterJson('result = ' + '0')
-//     return Value;    
-//     } 
+ async getEcg (empid:string,startDate:string): Promise<number[]>{        
+  try{
+     const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
+                          .select('ecgpacket')                                
+                          .where({"eq":empid})
+                          .andWhere({"writetime":MoreThanOrEqual(startDate)})
+                          .getRawMany()
+                          
+    
+    const changeEcg:number[] = await this.getEcgChangeValue(result)
+    const Value = (result.length != 0 && empid != null)? changeEcg : [0]
+    console.log(empid)                                                    
+    return Value;    
+  } catch(E){
+      console.log(E)
+  }                 
 
-//     async getEcgTime(empid:string,startDate:string,endDate:string): Promise<string[]>{        
-//         try{
-//            const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
-//                                 .select('Mid(writetime,12,4) writetime')                                
-//                                 .where({"eq":empid})
-//                                 .andWhere({"writetime":MoreThanOrEqual(startDate)})
-//                                 .andWhere({"writetime":LessThan(endDate)})
-//                                 .groupBy('Mid(writetime,12,4)')
-//                                 .getRawMany()                    
-//           console.log(empid)                                                    
-//           return result;    
-//         } catch(E){
-//             console.log(E)
-//         }                 
-      
-//      }
-
-//      async getGraphEcgValue(empid:string,startDate:string,endDate:string): Promise<string[]>{        
-//         try{
-//            const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
-//                                 .select('writetime,ecgpacket')                                
-//                                 .where({"eq":empid})
-//                                 .andWhere({"writetime":MoreThanOrEqual(startDate)})
-//                                 .andWhere({"writetime":LessThanOrEqual(endDate)})                                
-//                                 .getRawMany()                                               
-//           const changeEcg:number[] = await commonFun.getEcgNumArr(result)  
-//         //   const Value = (result.length != 0 && empid != null)? changeEcg : [0]                                
-//           return result;    
-//         } catch(E){
-//             console.log(E)
-//         }                 
-      
-//      }
 }
+
+ async getEcgTime(empid:string,startDate:string,endDate:string): Promise<string[]>{        
+  try{
+     const result = await this.ecg_byteRepository.createQueryBuilder('ecg_csv_ecgdata')
+                          .select('Mid(writetime,12,4) writetime')                                
+                          .where({"eq":empid})
+                          .andWhere({"writetime":MoreThanOrEqual(startDate)})
+                          .andWhere({"writetime":LessThan(endDate)})
+                          .groupBy('Mid(writetime,12,4)')
+                          .getRawMany()                    
+    console.log(empid)                                                    
+    return result;    
+  } catch(E){
+      console.log(E)
+  }                 
+
+}
+
+async getGraphEcgValue(empid:string,startDate:string,endDate:string): Promise<number[]>{        
+  try{
+     const result = await this.ecg_byteRepository.createQueryBuilder('ecg_csv_ecgdata')
+                          .select('ecgpacket')                                
+                          .where({"eq":empid})
+                          .andWhere({"writetime":MoreThanOrEqual(startDate)})
+                          .andWhere({"writetime":LessThanOrEqual(endDate)})                                
+                          .getRawMany()                                               
+    const changeEcg:number[] = await this.getEcgChangeValue(result)
+  //   const Value = (result.length != 0 && empid != null)? changeEcg : [0]                                
+    return changeEcg;    
+  } catch(E){
+      console.log(E)
+  }                 
+
+}
+}
+
+

@@ -34,10 +34,18 @@ export class firebasenoti{
         this.check = 0
         return await this.setPushAlarm(tokens,body.arrStatus,body.writetime,body.address,body.bodystate,body.timezone) 
       } catch(E){        
-        admin.app().delete()
-        this.check++
-        if(this.check == 2) return 
-        return await this.setAndroid_Ios(tokens,body,phone)
+        console.log(E)
+        try{
+          console.log(admin.app().name)
+          if (this.check == 0) admin.app().delete();
+          this.check++
+          if(this.check == 2) return false;
+          return await this.setAndroid_Ios(tokens,body,phone)
+        }catch(E){
+          console.log(E)
+          console.log('alarm 부분 error 확인바람')  
+          return false;    
+        }
       }          
     }
 
@@ -150,8 +158,4 @@ export class firebasenoti{
             return "检测到心率偏高!"    
         }
       }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 5fa4d26c8137199d850b4a0a215f844eb99fbd96

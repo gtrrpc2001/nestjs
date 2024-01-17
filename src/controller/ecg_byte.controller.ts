@@ -22,30 +22,38 @@ export class ecg_byteController {
     return await this.ecg_byteService.getTest(eq,startDate,endDate);
   }
 
-//   @Get("/Ecg")
-//  async getEcg(       
-//    @Query('eq') eq:string,
-//    @Query('startDate') startDate:string,
-//    ): Promise<number[]> {       
-//     return await this.ecg_csv_ecgdataService.getEcg(eq,startDate);
-//   }
+  @Get("/stringECHToByte")
+ async getChangeEcg(       
+   @Query('idx') idx:number,
+   @Query('limit') limit:number   
+   ): Promise<number> {       
+    return await this.ecg_byteService.EcgToByte(idx,limit);
+  }
 
-//   @Get("/EcgTime")
-//   async getEcgTime(
-//   @Query('eq') eq:string,
-//   @Query('startDate') startDate:string,
-//   @Query('endDate') endDate:string,
-//   ):Promise<string[]>{
-//     return await this.ecg_csv_ecgdataService.getEcgTime(eq,startDate,endDate);
-//   }
-
-//   @Get("/GraphEcg")
-//  async getGraphEcg(       
-//    @Query('eq') eq:string,
-//    @Query('startDate') startDate:string,
-//    @Query('endDate') endDate:string,
-//    ): Promise<string[]> {       
-//     return await this.ecg_csv_ecgdataService.getGraphEcgValue(eq,startDate,endDate);
-//   }
+  @Get("/Ecg")
+  async getEcg(       
+    @Query('eq') eq:string,
+    @Query('startDate') startDate:string,
+    ): Promise<number[]> {       
+     return await this.ecg_byteService.getEcg(eq,startDate);
+   }
+ 
+   @Get("/EcgTime")
+   async getEcgTime(
+   @Query('eq') eq:string,
+   @Query('startDate') startDate:string,
+   @Query('endDate') endDate:string,
+   ):Promise<string[]>{
+     return await this.ecg_byteService.getEcgTime(eq,startDate,endDate);
+   }
+ 
+   @Get("/GraphEcg")
+  async getGraphEcg(       
+    @Query('eq') eq:string,
+    @Query('startDate') startDate:string,
+    @Query('endDate') endDate:string,
+    ): Promise<number[]> {       
+     return await this.ecg_byteService.getGraphEcgValue(eq,startDate,endDate);
+   }
 
 }
