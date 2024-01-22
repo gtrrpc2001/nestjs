@@ -11,6 +11,7 @@ import { MySqlMslConfigService } from "src/service/mysqlconfig.service";
 import { appversionModule } from "src/module/appversion.module";
 import { 인원_목록Module } from "src/module/인원_목록.module";
 import { ecg_byteModule } from "src/module/ecg_byte.module";
+import { smsModule } from "src/module/sms.module";
 
 
 
@@ -29,7 +30,7 @@ export class allModule{
             
         ecg_csv_ecgdata_arrModule,ecg_csv_bpmdayModule,ecg_csv_datadayModule,
         ecg_csv_ecgdataModule,ecg_raw_history_lastModule,인원_목록Module,admin_login_logModule,
-        parentsModule,appversionModule,ecg_byteModule
+        parentsModule,appversionModule,ecg_byteModule,smsModule
         
     ]
 }
