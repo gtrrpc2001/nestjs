@@ -106,7 +106,7 @@ export class SmsService{
         const signature = this.makeSignatureForSMS(writetime);
 
         // 캐시에 있던 데이터 삭제
-        // await this.cacheManager.del(phoneNumber);
+        await this.cacheManager.del(phoneNumber);
         
         // 난수 생성 (6자리로 고정)
         const checkNumber = this.makeOTP().toString().padStart(6,'0')
@@ -160,7 +160,7 @@ export class SmsService{
                 })
             
             // 캐시 추가하기
-            // await this.cacheManager.set(phoneNumber, checkNumber, 180000);                       
+            await this.cacheManager.set(phoneNumber, checkNumber, 180000);                       
 
             return result
         }catch(E){
