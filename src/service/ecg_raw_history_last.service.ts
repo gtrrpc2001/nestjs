@@ -38,15 +38,9 @@ export class ecg_raw_history_lastService {
       console.log(E)
     }
     
-    }
-    
-    
-    
-<<<<<<< HEAD
-    async gethistory_last(): Promise<string>{
-=======
+    }    
+   
 async gethistory_last(): Promise<string>{
->>>>>>> ffcfbf797efd9e721a2d351417d10c3007ae2403
       const select = 'a.idx,a.eq,eqname,a.bpm,a.hrv,mid(a.temp,1,5) temp,'+
       'b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone,'+
       'a.writetime,'+
