@@ -45,6 +45,7 @@ export class SmsService{
         message.push(method)
         message.push(space)
         message.push(url)
+        message.push(newLine)
         message.push(timeStamp)
         message.push(newLine)
         message.push(this.accessKey)
