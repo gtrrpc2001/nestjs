@@ -47,39 +47,39 @@ export class 인원_목록DTO{
     readonly birth:string;
     
     @IsOptional()
-    @IsString()
-    readonly sleeptime:string;
+    @IsNumber()
+    readonly sleeptime:number;
 
     @IsOptional()
-    @IsString()
-    readonly uptime:string;
+    @IsNumber()
+    readonly uptime:number;
 
     @IsOptional()
-    @IsString()
-    readonly bpm:string;
+    @IsNumber()
+    readonly bpm:number;
 
     @IsOptional()
-    @IsString()
-    readonly step:string;
+    @IsNumber()
+    readonly step:number;
 
     
     @IsOptional()
-    @IsString()
-    readonly distanceKM:string;
+    @IsNumber()
+    readonly distanceKM:number;
 
     @IsOptional()
-    @IsString()
-    readonly calexe:string;
+    @IsNumber()
+    readonly calexe:number;
 
     @IsOptional()
-    @IsString()
-    readonly cal:string;
+    @IsNumber()
+    readonly cal:number;
 
     @IsOptional()
-    @IsString()
-    readonly alarm_sms:string;
+    @IsNumber()
+    readonly alarm_sms:number;
 
     @IsOptional()
-    @IsString()
-    readonly differtime:string;
+    @IsNumber()
+    readonly differtime:number;
 }

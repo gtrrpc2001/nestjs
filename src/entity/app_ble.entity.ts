@@ -1,23 +1,26 @@
 import { Entity, Column, PrimaryGeneratedColumn, Double, Int32 } from 'typeorm';
 
-@Entity('admin_login_log')
-export class admin_login_logEntity{
+@Entity('app_ble')
+export class app_bleEntity{
 
     @PrimaryGeneratedColumn()
     idx: number;
 
     @Column({type:'varchar'})
-    gubun:string;
-
-    @Column({type:'varchar'})
     eq:string;
 
     @Column({type:'varchar'})
-    eqname:string;
+    phone:string;
 
-    @Column({type:'date'})
+    @Column({type:'datetime'})
     writetime:string;
+
+    @Column({type:'varchar'})
+    gubun:string;    
     
     @Column({type:'varchar'})
     activity:string;
+
+    @Column({type:'varchar'})
+    serial:string;
 }

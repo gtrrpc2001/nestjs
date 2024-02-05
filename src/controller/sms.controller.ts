@@ -26,9 +26,9 @@ export class smsController {
   @Get("/checkSMS")
  async getCheckSMS(
     @Query('phone') phone: string,
-    @Query('sms') sms: string
+    @Query('code') code: number
     ): Promise<boolean> {            
-    return await this.smsService.checkSMS(phone,sms);   
+    return await this.smsService.checkSMS(phone,code);   
   }
 
   @Get("/Test")
@@ -39,8 +39,8 @@ export class smsController {
    return await this.smsService.sendSms(phone,nationalCode);
   }
 
-//   @Post("/postTest")
-//  async postTest(body:): Promise<boolean> { 
-//    return await this.smsService.sendSms(phone,nationalCode);
-//   }
+  @Get("/countTest")
+ async postTest(@Query('phone') phone:string): Promise<boolean> { 
+   return await this.smsService.checkDayCount(phone);
+  }
 }

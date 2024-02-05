@@ -25,4 +25,5 @@ export class ecg_raw_history_lastController {
  ): Promise<any> {       
     return await this.ecg_raw_history_lastService.gethistory_last();
   }
+
 }

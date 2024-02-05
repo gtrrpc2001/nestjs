@@ -39,16 +39,16 @@ export class 인원_목록Controller {
    @Query('empid') empid:string,
    @Query('pw') pw:string,
    @Query('phone') phone:string,
-   @Query('token') token:string): Promise<string> {     
-    return await this.인원_목록Service.checkLogin(empid,pw,phone,token);
+   @Query('token') token:string,
+   @Query('destroy') destroy:boolean
+   ): Promise<string> {          
+    return await this.인원_목록Service.checkLogin(empid,pw,phone,token,destroy);
   }  
 
   @Get("/test")
  async getTest(       
    @Query('empid') empid:string,
-   @Query('pw') pw:string,
-   @Query('phone') phone:string,
-   @Query('token') token:string): Promise<any> {
-     return await this.인원_목록Service.CheckLoginGuardianApp(empid,pw,phone,token);    
+   @Query('pw') pw:string): Promise<any> {
+     return await this.인원_목록Service.test(empid,pw);    
   }
 }

@@ -121,7 +121,7 @@ export class ecg_byteService {
 
   async EcgToByte (idx:number,limit:number): Promise<number>{        
     let index = 0;
-    try{        
+    try{      
         const result:ecg_csv_ecgdataEntity[] = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
                               .select('*')                                
                               .where({"idx":MoreThan(index == 0 ? idx : index)})
@@ -139,11 +139,11 @@ export class ecg_byteService {
             const ecg = dR.ecgpacket
             const changeEcg:number[] = await commonFun.getFromStringToNumberArrEcg(ecg)          
             const b:ecg_byteDTO = {"kind":"ecgByteInsert","eq":eq,"writetime":writetime,"timezone":timezone,"bpm":bpm,"ecgPacket":changeEcg}
-            await this.setInsert(b)
-            console.log(index)
+            await this.setInsert(b)            
           }
   
-        }                                                         
+        }
+      console.log(index)
       return index;    
     } catch(E){
         console.log(E)
@@ -154,13 +154,11 @@ export class ecg_byteService {
 
  async getEcg (empid:string,startDate:string): Promise<number[]>{        
   try{
-     const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder('ecg_csv_ecgdata')
+     const result = await this.ecg_byteRepository.createQueryBuilder('ecg_byte')
                           .select('ecgpacket')                                
                           .where({"eq":empid})
                           .andWhere({"writetime":MoreThanOrEqual(startDate)})
                           .getRawMany()
-                          
-    
     const changeEcg:number[] = await this.getEcgChangeValue(result)
     const Value = (result.length != 0 && empid != null)? changeEcg : [0]
     console.log(empid)                                                    

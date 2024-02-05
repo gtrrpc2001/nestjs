@@ -38,12 +38,14 @@ export class ecg_raw_history_lastService {
       console.log(E)
     }
     
-    }    
-   
-async gethistory_last(): Promise<string>{
+    }
+    
+    
+    
+    async gethistory_last(): Promise<string>{
       const select = 'a.idx,a.eq,eqname,a.bpm,a.hrv,mid(a.temp,1,5) temp,'+
       'b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone,'+
-      'a.writetime,'+
+      'a.writetime,a.battery, '+
       'case '+
       "when MID(a.timezone,1,1) = '-' then DATE_ADD(a.writetime,INTERVAL cast(MID(a.timezone,2,2) AS unsigned) + 9 HOUR)"+
       " when MID(a.timezone,1,1) = '+' AND cast(MID(a.timezone,2,2) AS UNSIGNED) < 9 AND a.timezone NOT LIKE '%KR%' then DATE_ADD(a.writetime,INTERVAL 9 - cast(MID(a.timezone,2,2) AS unsigned) HOUR)" +
