@@ -47,8 +47,13 @@ export class 인원_목록Controller {
 
   @Get("/test")
  async getTest(       
-   @Query('empid') empid:string,
-   @Query('pw') pw:string): Promise<any> {
-     return await this.인원_목록Service.test(empid,pw);    
-  }
+   @Query('empid') empid:string): Promise<any> {
+     return await this.인원_목록Service.setLastLogInsert(empid);     
+    }
+
+    @Post("/postTest")
+ async postTest(    
+   @Body() body: 인원_목록DTO): Promise<any> {        
+    return await this.인원_목록Service.lastDelete(body.eq);
+  }     
 }

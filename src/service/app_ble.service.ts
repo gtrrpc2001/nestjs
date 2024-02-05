@@ -18,6 +18,7 @@ export class app_bleService {
                             eq:body.eq,phone:body.phone,writetime:body.writetime,activity:body.activity,serial:body.serial
                         }])
                         .execute()
+        console.log(result)
         boolResult = true
         var jsonValue = 'result = ' + boolResult.toString()
         console.log('app_log - insert')

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { 인원_목록DTO } from '../dto/인원_목록.dto';
 import { commonFun } from 'src/clsfunc/commonfunc';
 import { DeleteUserLogEntity, 인원_목록Entity } from 'src/entity/인원_목록.entity';
-import { ecg_raw_history_lastEntity } from 'src/entity/ecg_raw_history_last.entity';
+import { delete_user_last_logEntity, ecg_raw_history_lastEntity } from 'src/entity/ecg_raw_history_last.entity';
 import { parentsEntity } from 'src/entity/parents.entity';
 import { isDefined } from 'class-validator';
 import { commonQuery } from 'src/clsfunc/commonQuery';
@@ -19,6 +19,7 @@ export class 인원_목록Service {
   @InjectRepository(ecg_raw_history_lastEntity) private ecg_raw_history_lastRepository:Repository<ecg_raw_history_lastEntity>,
   @InjectRepository(parentsEntity) private parentsRepository:Repository<parentsEntity>,
   @InjectRepository(DeleteUserLogEntity) private DeleteUserLogRepository:Repository<DeleteUserLogEntity>,
+  @InjectRepository(delete_user_last_logEntity) private delete_user_last_logRepository:Repository<delete_user_last_logEntity>,
   ){}
   
 
@@ -50,9 +51,10 @@ export class 인원_목록Service {
   async userDelete(body:인원_목록DTO):Promise<boolean>{
     try{
         let bool = await this.setInsert(this.DeleteUserLogRepository,DeleteUserLogEntity,body);
-        if(bool)
-        {
-            return await this.setDelete(body.eq)
+        let lastInsert = await this.setLastLogInsert(body.eq)
+        if(bool && lastInsert)
+        {         
+            return await this.setDelete(body.eq)            
         }else{
             return false
         }
@@ -62,17 +64,64 @@ export class 인원_목록Service {
     }
   }
 
-  async setDelete(eq:string){
+  async setLastLogInsert(eq:string):Promise<boolean>{
         try{
-            const result = await this.인원_목록Repository.createQueryBuilder()
-                                    .delete()                                    
-                                    .where({"eq":eq})
-                                    .execute()
+            const info = await this.getLastInfo(eq)
+            await this.delete_user_last_logRepository.createQueryBuilder()
+                            .insert()
+                            .into(delete_user_last_logEntity)
+                            .values([{
+                                eq:info.eq,eqname:info.eqname,writetime:info.writetime,timezone:info.timezone,bpm:info.bpm,hrv:info.hrv,
+                                cal:info.cal,calexe:info.calexe,step:info.step,distanceKM:info.distanceKM,arrcnt:info.arrcnt,
+                                temp:info.temp,battery:info.battery,bodystate:info.bodystate,isack:info.isack,log:info.log
+                            }])
+                            .execute()
             return true;
         }catch(E){
             console.log(E)
             return false;
         }
+  }
+
+  async getLastInfo(eq:string):Promise<ecg_raw_history_lastEntity>{
+    try{
+        const result:ecg_raw_history_lastEntity = await this.ecg_raw_history_lastRepository
+                                                    .createQueryBuilder()
+                                                    .select('*')
+                                                    .where({"eq":eq})
+                                                    .getRawOne()
+        return result
+    }catch(E){
+        console.log(E)
+        return;
+    }
+  }
+
+  async setDelete(eq:string):Promise<boolean>{
+        try{
+            const result = await this.인원_목록Repository.createQueryBuilder()
+                                    .delete()                                    
+                                    .where({"eq":eq})
+                                    .execute()
+            await this.lastDelete(eq)
+            return true;
+        }catch(E){
+            console.log(E)
+            return false;
+        }
+  }
+
+  async lastDelete(eq:string):Promise<boolean>{
+    try{
+        await this.ecg_raw_history_lastRepository.createQueryBuilder()
+                    .delete()                                    
+                    .where({"eq":eq})
+                    .execute()
+        return true;
+    }catch(E){
+        console.log(E)
+        return false;
+    }
   }
 
   async setProfile(body:인원_목록DTO): Promise<string>{

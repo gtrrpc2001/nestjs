@@ -13,10 +13,7 @@ export class app_bleEntity{
     phone:string;
 
     @Column({type:'datetime'})
-    writetime:string;
-
-    @Column({type:'varchar'})
-    gubun:string;    
+    writetime:string;    
     
     @Column({type:'varchar'})
     activity:string;
