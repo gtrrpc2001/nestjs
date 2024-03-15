@@ -36,13 +36,23 @@ export class ecg_raw_history_lastService {
       return Value;
     }catch(E){
       console.log(E)
-    }
-    
-    }
-    
-    
-    
-    async gethistory_last(): Promise<string>{
+    }    
+  }
+
+  async get_lastBpmTime(empid:string): Promise<string>{        
+    try{
+      const result:ecg_raw_history_lastEntity = await this.ecg_raw_history_lastRepository.createQueryBuilder('ecg_raw_history_last')
+                                                        .select('bpm,temp,writetime')    
+                                                        .where({"eq":empid})    
+                                                        .getRawOne()       
+      const Value = (result?.writetime != undefined && empid != null)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')      
+      return Value;
+    }catch(E){
+      console.log(E)
+    }    
+  }
+
+  async gethistory_last(eq:string): Promise<string>{
       const select = 'a.idx,a.eq,eqname,a.bpm,a.hrv,mid(a.temp,1,5) temp,'+
       'b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone,'+
       'a.writetime,a.battery, '+
@@ -55,20 +65,20 @@ export class ecg_raw_history_lastService {
       try{
         const subQuery = await this.subQueryDataDay()
         let result
-        // if(eq.length != 0){
-        //  result = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
-        // .select(select)         
-        // .leftJoin(subQuery,'b','a.eq = b.eq AND Mid(a.writetime,1,10) = b.writetime')          
-        // .where({"eq":In(eq)})
-        // .orderBy('changeTime' ,'DESC')   
-        // .getRawMany()  
-        // }else{
+        if(eq != "admin"){
+         result = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
+        .select(select)         
+        .leftJoin(subQuery,'b','a.eq = b.eq AND Mid(a.writetime,1,10) = b.writetime')          
+        .where({"eq":eq})
+        .orderBy('changeTime' ,'DESC')   
+        .getRawMany()  
+        }else{
           result = await this.ecg_raw_history_lastRepository.createQueryBuilder('a')
           .select(select)         
-          .leftJoin(subQuery,'b','a.eq = b.eq AND Mid(a.writetime,1,10) = b.writetime')          
+          .leftJoin(subQuery,'b','a.eq = b.eq AND Mid(a.writetime,1,10) = b.writetime')         
           .orderBy('changeTime' ,'DESC')   
           .getRawMany()
-        // }
+        }
         
         const Value = (result.length != 0)? commonFun.converterJson(result) : commonFun.converterJson('result = ' + '0')       
         
@@ -78,7 +88,7 @@ export class ecg_raw_history_lastService {
       }      
     }
       
-     async subQueryDataDay(): Promise<string>{
+    async subQueryDataDay(): Promise<string>{
         const subSelect = 'eq ,Mid(writetime,1,10) writetime,sum(step) step,sum(distanceKM) distanceKM,sum(cal) cal,sum(calexe) calexe,sum(arrcnt) arrcnt'
         try{
           
@@ -94,6 +104,6 @@ export class ecg_raw_history_lastService {
         }catch(E){
           console.log(E)
         }
-      }
+    }
 
 }
