@@ -136,14 +136,32 @@ export class 인원_목록Service {
             "alarm_sms":body.alarm_sms,"differtime":body.differtime
         })
         .where({"eq":body.eq})
-        .execute()
+        .execute()        
         boolResult = true
+        if(boolResult)
+            boolResult = await this.lastUpdate(body)        
         var jsonValue = 'result = ' + boolResult.toString()
         console.log('setProfile')
         return commonFun.converterJson(jsonValue);
     }catch(E){
         console.log(E)
         return E;
+    }
+  }
+
+  async lastUpdate(body:인원_목록DTO):Promise<boolean>{
+    try{
+        await this.ecg_raw_history_lastRepository.createQueryBuilder()
+        .update(ecg_raw_history_lastEntity)
+        .set({
+            "eqname":body.eqname
+        })
+        .where({"eq":body.eq})
+        .execute()
+        return true;
+    }catch(E){
+        console.log(E)
+        return false;
     }
   }
 
@@ -239,7 +257,7 @@ export class 인원_목록Service {
                                 .where({"eq":empid})
                                 .getRawOne()
         const {password,differtime} = result
-        const otherAppLoginCheck = differtime
+        const otherAppLoginCheck = 0 //differtime
         return await this.login_outCheck(pw,password,otherAppLoginCheck);
     }catch(E){
         console.log(E)
@@ -254,16 +272,15 @@ export class 인원_목록Service {
              destroy = true;
 
         var boolResult:any = false
-
-        if(isDefined(phone)){
+        console.log('여기맞나' + phone)
+        if(isDefined(phone)){            
             boolResult = await this.CheckLoginGuardianApp(empid,pw,phone,token)
         }else{
             boolResult = await this.checkPassword(empid,pw,destroy)
         }
-
-        if(String(boolResult).includes('true') && !destroy){         
+        if(String(boolResult).includes('true') && !destroy &&!isDefined(phone))
             boolResult = await this.updateLogin_out(empid,1)
-        }        
+
 
         var jsonValue = 'result = ' + boolResult.toString()
         console.log(`${empid}------${pw}-----${jsonValue}`)    
@@ -363,6 +380,23 @@ export class 인원_목록Service {
             console.log(E)
             return E;
         }             
+    }
+
+    async checkPhone(phone:string):Promise<string>{
+        try{
+            var bool = false
+            const result = await this.인원_목록Repository.createQueryBuilder()
+                            .select('phone')
+                            .where({"phone":phone})
+                            .getRawMany()
+            if(result.length == 0)
+                bool = true
+            var jsonValue = 'result = ' + bool.toString()
+            console.log('checkPhone')
+            return commonFun.converterJson(jsonValue);
+        }catch(E){
+            console.log(E)
+        }
     }
 
     async test(empid:string,pw:string):Promise<any>{
