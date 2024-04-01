@@ -1,5 +1,6 @@
 import { Controller, Get,Post,Body,Query} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { firebasenoti } from 'src/alarm/firebasenoti';
 import { admin_login_logDTO } from 'src/dto/admin_login_log.dto';
 import { admin_login_logService } from 'src/service/admin_login_log.service';
 

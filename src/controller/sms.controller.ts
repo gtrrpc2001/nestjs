@@ -33,10 +33,9 @@ export class smsController {
 
   @Get("/Test")
  async getTest(
-    @Query('phone') phone: string,
-    @Query('nationalCode') nationalCode: number
+    @Query('phone') phone: string
  ): Promise<any> { 
-   return await this.smsService.sendSms(phone,nationalCode);
+   return await this.smsService.updateAppAlarmSendSms(phone);
   }
 
   @Get("/countTest")

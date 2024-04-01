@@ -127,7 +127,10 @@ export class 인원_목록Entity{
     differtime:Int32;
 
     @Column({type:'varchar'})
-    protecteq:string; 
+    protecteq:string;
+    
+    @Column({type:'int'})
+    appKey:Int32;
     
 }
 

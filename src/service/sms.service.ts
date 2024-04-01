@@ -172,6 +172,8 @@ export class SmsService{
         }
     }
 
+
+
     //인증번호 발송 성공시 db 저장
     insertSMS = async (phoneNumber:string) => {
         try{
@@ -204,6 +206,66 @@ export class SmsService{
     makeOTP = ():number => {
         const randNum = Math.floor(Math.random() * 1000000);
         return randNum;
+    }
+
+    updateAppAlarmSendSms = async (phoneNumber:string):Promise<any> => {
+        
+        const writetime = Date.now().toString()        
+
+        const signature = this.makeSignatureForSMS(writetime);        
+
+        const sendNumber:string = this.config.get('COMPANYNUMBER')
+
+        const googleUrl = 'https://play.google.com/store/apps/details?id=com.msl.ble_for_ecg_new_ble'
+        const appleUrl = 'https://apps.apple.com/us/app/lookheart/id6450522486'
+
+        const content = `안녕하세요 LOOKHEART앱 사용자 여러분 (주)엠에스엘 에서 보낸 앱 업데이트 알림 입니다. \n` + 
+        `스토어 주소 안내 해 드리겠습니다. \n \n` +
+        `\ 안드로이드 사용자 - ${googleUrl} ,,\n \  \n 애플 사용자 - ${appleUrl} \n \n이용해 주셔서 감사합니다.`
+
+        const body = {
+            type:'LMS',
+            contentType: 'COMM',
+            countryCode: `82`,
+            from: sendNumber,            
+            content:content,              
+            messages:[
+                {                    
+                    to:phoneNumber                    
+                }
+            ]
+        }        
+
+        console.log(body)        
+
+       const headers = {
+            'Content-Type': 'application/json; charset=utf-8',
+            'x-ncp-apigw-timestamp':writetime,
+            'x-ncp-iam-access-key':this.accessKey,
+            'x-ncp-apigw-signature-v2':signature,            
+        }
+
+        const signatureUrl = this.getUrl()
+        const url = `https://sens.apigw.ntruss.com${signatureUrl}`        
+        try{            
+            const result = await axios.post(                
+                url,
+                body,                   
+                {headers},        
+            ).then(async() => {                
+                return true;
+            }).catch(
+                (error) =>
+                {
+                console.log(HttpStatus.INTERNAL_SERVER_ERROR)
+                console.log(error)
+                return error
+                })             
+            return result
+        }catch(E){
+            console.log(E)
+            return E
+        }
     }
 
 }

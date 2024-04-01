@@ -7,7 +7,7 @@ export class pwBcrypt{
     }
 
     static async validatePwd(pwd:string,savePwd:string): Promise<boolean>{                        
-        const validatePwd = await bcrypt.compare(pwd,savePwd)        
+        const validatePwd = await bcrypt.compare(pwd,savePwd)                
         return validatePwd
     }
 }

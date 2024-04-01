@@ -11,10 +11,10 @@ import { firebasenoti } from 'src/alarm/firebasenoti';
 import { ConfigService } from '@nestjs/config';
 import { 인원_목록Entity } from 'src/entity/인원_목록.entity';
 import { ecg_csv_ecgdataEntity } from 'src/entity/ecg_csv_ecgdata.entity';
+import { alarmController } from 'src/alarm/alarmController';
 
 @Injectable()
-export class ecg_csv_ecgdata_arrService { 
-  
+export class ecg_csv_ecgdata_arrService {
   ecg_raws: ecg_csv_ecgdata_arrEntity[] = [];    
   constructor(
     @InjectRepository(ecg_csv_ecgdata_arrEntity) private ecg_csv_ecgdata_arrRepository:Repository<ecg_csv_ecgdata_arrEntity>,
@@ -45,9 +45,8 @@ export class ecg_csv_ecgdata_arrService {
     try{    
         const arrInsert = await this.setInsert(body)  
         if(arrInsert){
-          const parentsArr = await this.getSelToken(body)           
-          boolResult = await this.callPushAlarm(parentsArr,body)
-          //console.log(`boolean 값 안받아짐 -- ${boolResult}`)
+          const parentsArr = await alarmController.getSelToken(this.parentsRepository,body.eq)
+          boolResult = await alarmController.callPushAlarm(parentsArr,body,this.configService)          
         }        
         var jsonValue = `result =  ${boolResult}`
         return commonFun.converterJson(jsonValue);
@@ -56,34 +55,6 @@ export class ecg_csv_ecgdata_arrService {
         return E;
     }  
     
-  }
-
-  async callPushAlarm(parentsArr:parentsEntity[],body:ecg_csv_ecgdataDTO):Promise<boolean>{
-    try{
-      if(parentsArr.length != 0){
-        let tokens : string[] = commonFun.getTokens(parentsArr)
-        let i = 0;                
-        if(tokens.length != 0)
-          return await firebasenoti.PushNoti(tokens,body,this.configService)
-        else
-          return false;
-       }
-    }catch{
-      return false;
-    }
-    
-  }
-
-  async getSelToken(body:ecg_csv_ecgdataDTO) : Promise<parentsEntity[]>{
-    try{
-      const result = await this.parentsRepository.createQueryBuilder('parents')
-      .select('token')
-      .where({"eq":body.eq})
-      .getRawMany()
-      return result;
-    }catch(E){
-      console.log(E)
-    }    
   }
 
   async setInsert(body:ecg_csv_ecgdataDTO): Promise<boolean>{
@@ -110,8 +81,7 @@ export class ecg_csv_ecgdata_arrService {
         return Value;    
       } catch(E){
           console.log(E)
-      }                 
-    
+      }    
    }
 
    async onlyArrCount(empid:string,startDate:string,endDate:string): Promise<string>{
@@ -132,13 +102,12 @@ export class ecg_csv_ecgdata_arrService {
    }
 
    async countArr (empid:string,startDate:string,endDate:string): Promise<string>{        
-    try{       
+    try{
       let Value = await this.onlyArrCount(empid,startDate,endDate)
       const info = await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid,true)
       if(!Value.includes('result') && !info.includes('result')){
-       const arr = Value?.replaceAll('{','')       
-       const profile = info?.replaceAll('}',',')
-       console.log(profile)  
+       const arr = Value?.replace('{','')       
+       const profile = info?.replace('}',',')
        Value =  profile + arr
       }
       console.log(Value)                                                    
@@ -148,7 +117,7 @@ export class ecg_csv_ecgdata_arrService {
         console.log(E)
     }                 
   
- }
+ } 
 
  async graphArrCount (empid:string,startDate:string,endDate:string,len:number):Promise<string>{
   try{

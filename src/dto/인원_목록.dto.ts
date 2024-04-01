@@ -82,4 +82,8 @@ export class 인원_목록DTO{
     @IsOptional()
     @IsNumber()
     readonly differtime:number;
+
+    @IsOptional()
+    @IsNumber()
+    readonly appKey:number;
 }

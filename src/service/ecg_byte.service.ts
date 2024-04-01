@@ -88,9 +88,6 @@ export class ecg_byteService {
                                 .andWhere({"writetime":LessThanOrEqual(endDate)})                                
                                 .getRawMany()
             const value = await this.getChangeValue(result)
-        // .select(`writetime,AES_DECRYPT(UNHEX(ecgpacket), ${key}) ecgpacket`)                                
-        //   const changeEcg:number[] = await commonFun.getEcgNumArr(result)  
-        //   const Value = (result.length != 0 && empid != null)? changeEcg : [0]                                
           return commonFun.converterJson(value);    
         } catch(E){
             console.log(E)
@@ -100,9 +97,7 @@ export class ecg_byteService {
     async getChangeValue(result: any[]){
      return result.map(d => {
         const {writetime,ecgpacket} = d                                     
-        const ecg = commonFun.getEcgNumber(ecgpacket)                                     
-        // const _ecg = ecg.filter((d:number) => d < 1100 && d > 200)
-        // console.log(_ecg.length)
+        const ecg = commonFun.getEcgNumber(ecgpacket)
         return {writetime,ecg}
     });
   }
@@ -171,7 +166,7 @@ export class ecg_byteService {
 
  async getEcgTime(empid:string,startDate:string,endDate:string): Promise<string[]>{        
   try{
-     const result = await this.ecg_byteRepository.createQueryBuilder('ecg_csv_ecgdata')
+     const result = await this.ecg_byteRepository.createQueryBuilder('ecg_byte')
                           .select('Mid(writetime,12,4) writetime')                                
                           .where({"eq":empid})
                           .andWhere({"writetime":MoreThanOrEqual(startDate)})
@@ -188,7 +183,7 @@ export class ecg_byteService {
 
 async getGraphEcgValue(empid:string,startDate:string,endDate:string): Promise<number[]>{        
   try{
-     const result = await this.ecg_byteRepository.createQueryBuilder('ecg_csv_ecgdata')
+     const result = await this.ecg_byteRepository.createQueryBuilder('ecg_byte')
                           .select('ecgpacket')                                
                           .where({"eq":empid})
                           .andWhere({"writetime":MoreThanOrEqual(startDate)})

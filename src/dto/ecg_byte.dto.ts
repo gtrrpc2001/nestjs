@@ -1,4 +1,4 @@
-import { IsArray, IsNumber,IsOptional,IsString, isNumber } from "class-validator";
+import { IsArray, IsNumber,IsOptional,IsString } from "class-validator";
 
 
 export class ecg_byteDTO{

@@ -25,6 +25,10 @@ export class admin_login_logDTO{
     @IsOptional()
     readonly eqname:string;
 
+    @IsString()
+    @IsOptional()
+    readonly timezone:string;
+
     @IsString()    
     readonly writetime:string;
     

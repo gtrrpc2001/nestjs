@@ -2,7 +2,7 @@ import { isDefined } from 'class-validator';
 import { parentsEntity } from 'src/entity/parents.entity';
  export class commonFun{
        
-   static converterJson(result:any){        
+   static converterJson(result:any){            
         return JSON.stringify(result);
     }
 
@@ -47,8 +47,9 @@ import { parentsEntity } from 'src/entity/parents.entity';
       static getTokens(parentsArr:parentsEntity[]):string[] {
         let tokens:string[] = []
         let i = 0
-        for(const parents of parentsArr){          
-            if(isDefined(parents.token)){
+        for(const parents of parentsArr){   
+          const token = parents.token
+            if(token != "" && token != null){
               tokens[i] = parents.token
               i += 1
             }          

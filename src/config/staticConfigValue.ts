@@ -2,17 +2,19 @@ import { ConfigService } from '@nestjs/config';
 
 
 export class staticConfigValue{  
-   static getFirebase_sdk = (configService:ConfigService) => { 
+   static getFirebase_sdk = (configService:ConfigService):{projectID:string,privateKey:string} => { 
                 
         return {
-           path: configService.get<string>('FIREBASESDKPATH')
+           projectID: configService.get<string>('ANDROIDID'),
+           privateKey: configService.get<string>('ANDROIDKEY')
         }
     }
 
-    static getFirebase_sdk_ios = (configService:ConfigService) => { 
+    static getFirebase_sdk_ios = (configService:ConfigService):{projectID:string,privateKey:string} => { 
                 
       return {
-         path: configService.get<string>('FIREBASESKDIOSPATH')
+         projectID: configService.get<string>('IOSDID'),
+         privateKey: configService.get<string>('IOSKEY')
       }
   }
 

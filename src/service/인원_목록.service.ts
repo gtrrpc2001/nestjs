@@ -41,6 +41,8 @@ export class 인원_목록Service {
             return await this.userDelete(body);
         case "updateDifferTime" :
             return await this.updateLogin_out(body.eq,body.differtime)
+        case "updateAppKey" :
+            return await this.updateAppKey(body.eq,body.appKey)
         case null  :
             return commonFun.converterJson('result = ' + false.toString());
 
@@ -399,18 +401,30 @@ export class 인원_목록Service {
         }
     }
 
-    async test(empid:string,pw:string):Promise<any>{
+    async getAppKey(empid:string):Promise<string>{
         try{
-            const result = await this.인원_목록Repository.createQueryBuilder('user')
-                            .select('password')    
+            const result:인원_목록Entity = await this.인원_목록Repository.createQueryBuilder('user')
+                            .select('appKey')    
                             .where({"eq":empid})
-                            .getRawOne()
-            const {password} = result
-           return await pwBcrypt.validatePwd(pw,password);
+                            .getRawOne()            
+           return commonFun.converterJson(result.appKey);
+        }catch(E){
+            console.log(E)            
+        }        
+    }
+
+    async updateAppKey(empid:string,appKey:number):Promise<any>{
+        try{
+            const result = await this.인원_목록Repository.createQueryBuilder()
+                                        .update(인원_목록Entity)        
+                                        .set({ "appKey":appKey})
+                                        .where({"eq":empid})
+                                        .execute()
+            return true;
         }catch(E){
             console.log(E)
-            return false
-        }        
+            return false;
+        }
     }
     
 }

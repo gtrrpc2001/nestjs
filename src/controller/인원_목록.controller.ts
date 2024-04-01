@@ -1,4 +1,4 @@
-import { Controller, Get,Post,Body,Query} from '@nestjs/common';
+import { Controller, Get,Post,Body,Query, Redirect} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { 인원_목록DTO } from '../dto/인원_목록.dto';
 import { 인원_목록Service } from 'src/service/인원_목록.service';
@@ -7,6 +7,12 @@ import { 인원_목록Service } from 'src/service/인원_목록.service';
 @ApiTags('msl')
 export class 인원_목록Controller {
   constructor(private readonly 인원_목록Service: 인원_목록Service) {}  
+
+  @Get('redirect')
+  @Redirect('')
+  async redirect(): Promise<any>{
+    return ''
+  }
 
   @Post("/api_getdata")
  async postAll(    
@@ -43,17 +49,24 @@ export class 인원_목록Controller {
    @Query('destroy') destroy:boolean
    ): Promise<string> {          
     return await this.인원_목록Service.checkLogin(empid,pw,phone,token,destroy);
-  }  
+  }
+  
+  @Get("/checkPhone")
+ async checkPhone(       
+   @Query('phone') phone:string): Promise<string> {     
+    return await this.인원_목록Service.checkPhone(phone);
+  }
 
-  @Get("/test")
- async getTest(       
-   @Query('empid') empid:string): Promise<any> {
-     return await this.인원_목록Service.setLastLogInsert(empid);     
-    }
+  @Get("/appKey")
+ async getAppKey(       
+   @Query('empid') empid:string): Promise<string> {
+     return await this.인원_목록Service.getAppKey(empid);     
+  }
 
-    @Post("/postTest")
+  @Post("/postTest")
  async postTest(    
    @Body() body: 인원_목록DTO): Promise<any> {        
     return await this.인원_목록Service.lastDelete(body.eq);
-  }     
+  } 
+    
 }

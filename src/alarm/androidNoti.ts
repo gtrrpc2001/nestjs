@@ -1,29 +1,24 @@
-import * as admin from 'firebase-admin';
 import { staticConfigValue } from 'src/config/staticConfigValue';
 import { ConfigService } from '@nestjs/config';
 import { firebasenoti } from './firebasenoti';
 
 export class androidNoti{
 
-    static path = ""  
-    static android:any
+    static android:{
+      projectID: string;
+      privateKey: string;
+  }
 
-    static setPath = (configService:ConfigService)  => {        
-        this.path = staticConfigValue.getFirebase_sdk(configService).path   
-        this.android = require(this.path)
+    static setPath = (configService:ConfigService)  => {                
+        this.android = staticConfigValue.getFirebase_sdk(configService)
     }    
 
     static async ANDROID(configService:ConfigService): Promise<boolean>{
         try{
-                     
-          if(admin.apps.length != 0)
-                admin.app().delete();          
-
-          if(this.path == "")
+          if(this.android.projectID == ""){
             this.setPath(configService);            
-            
-          firebasenoti.initializeApp(this.android)
-
+            firebasenoti.initializeApp(this.android,'ANDROID')
+          }
           return true    
           }catch(E){
             console.log('여기서 빠짐')           
