@@ -6,7 +6,7 @@ export class staticConfigValue{
                 
         return {
            projectID: configService.get<string>('ANDROIDID'),
-           privateKey: configService.get<string>('ANDROIDKEY')
+           privateKey: configService.get<string>('ANDROIDKEY').replace(/\\n/g,'\n')
         }
     }
 
@@ -14,7 +14,7 @@ export class staticConfigValue{
                 
       return {
          projectID: configService.get<string>('IOSDID'),
-         privateKey: configService.get<string>('IOSKEY')
+         privateKey: configService.get<string>('IOSKEY').replace(/\\n/g,'\n')
       }
   }
 
