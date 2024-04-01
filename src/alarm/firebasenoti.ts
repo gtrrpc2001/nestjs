@@ -8,12 +8,12 @@ import { androidNoti } from './androidNoti';
 
 export class firebasenoti{
 
-  static initializeApp = (kind:any,name:string) => {       
+  static initializeApp = (kind:admin.ServiceAccount,name:string) => {       
     if(admin.apps.length < 2){
      admin.initializeApp({
         credential: admin.credential.cert(kind),        
       }, name);
-    }           
+    }    
 }
 
 static async PushNoti(tokens:string[],body:any,configService:ConfigService,ble:boolean): Promise<boolean>{  
