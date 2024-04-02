@@ -8,13 +8,12 @@ import { CacheInterceptor,CACHE_MANAGER } from '@nestjs/cache-manager';
 import * as crypto from 'crypto';    
 import { Cache } from 'cache-manager';
 import { ConfigService } from '@nestjs/config';
-import axios, { AxiosRequestConfig } from 'axios'
+import axios from 'axios'
 import { 인원_목록Entity } from 'src/entity/인원_목록.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import {Repository,Like} from 'typeorm';
+import { Repository,Like } from 'typeorm';
 import { smsEntity } from 'src/entity/sms.entity';
 import * as dayjs from 'dayjs';
-import { commonFun } from 'src/clsfunc/commonfunc';
 
 @Injectable()
 @UseInterceptors(CacheInterceptor)    
@@ -104,7 +103,7 @@ export class SmsService{
         // TODO : 1일 5회 문자인증 초과했는지 확인하는 로직 필요!
         const writetime = Date.now().toString()
 
-        // if (!await this.checkDayCount(phoneNumber)) return '인증번호 하루 횟수 초과 하셨습니다.';
+        if (!await this.checkDayCount(phoneNumber)) return '인증번호 하루 횟수 초과 하셨습니다.';
 
         const signature = this.makeSignatureForSMS(writetime);
 
@@ -127,9 +126,7 @@ export class SmsService{
                     to:phoneNumber                    
                 }
             ]
-        }        
-
-        console.log(body)        
+        }                     
 
        const headers = {
             'Content-Type': 'application/json; charset=utf-8',
@@ -140,19 +137,15 @@ export class SmsService{
 
         const signatureUrl = this.getUrl()
         const url = `https://sens.apigw.ntruss.com${signatureUrl}`        
-        try{
-            // const result = (await axios({
-            //     method:'POST',
-            //     url:url,
-            //     headers:headers,
-            //     data:body,                
-            // })).request
+        try{            
             const result = await axios.post(                
                 url,
                 body,                   
                 {headers},        
             ).then(async() => {
                 await this.insertSMS(phoneNumber)
+                // 캐시 추가하기
+                await this.cacheManager.set(phoneNumber, checkNumber, 180000);                       
                 return true;
             }).catch(
                 (error) =>
@@ -161,10 +154,6 @@ export class SmsService{
                 console.log(error)
                 return error
                 })
-            
-            // 캐시 추가하기
-            await this.cacheManager.set(phoneNumber, checkNumber, 180000);                       
-
             return result
         }catch(E){
             console.log(E)
