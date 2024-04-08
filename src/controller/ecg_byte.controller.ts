@@ -12,23 +12,7 @@ export class ecg_byteController {
  async postAll(    
    @Body() body: ecg_byteDTO): Promise<any> {        
     return await this.ecg_byteService.gubunKind(body);
-  }
-
-  @Get("/test")
- async getTest(       
-   @Query('eq') eq:string,
-   @Query('startDate') startDate:string,
-   @Query('endDate') endDate:string): Promise<string> {       
-    return await this.ecg_byteService.getTest(eq,startDate,endDate);
-  }
-
-  @Get("/stringECHToByte")
- async getChangeEcg(       
-   @Query('idx') idx:number,
-   @Query('limit') limit:number   
-   ): Promise<number> {       
-    return await this.ecg_byteService.EcgToByte(idx,limit);
-  }
+  } 
 
   @Get("/Ecg")
   async getEcg(       
@@ -52,7 +36,7 @@ export class ecg_byteController {
     @Query('eq') eq:string,
     @Query('startDate') startDate:string,
     @Query('endDate') endDate:string,
-    ): Promise<number[]> {       
+    ): Promise<any> {       
      return await this.ecg_byteService.getGraphEcgValue(eq,startDate,endDate);
    }
 
