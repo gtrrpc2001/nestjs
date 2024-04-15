@@ -9,6 +9,7 @@ import { parentsEntity } from 'src/entity/parents.entity';
 import { isDefined } from 'class-validator';
 import { commonQuery } from 'src/clsfunc/commonQuery';
 import { pwBcrypt } from 'src/clsfunc/pwAES';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
@@ -20,6 +21,7 @@ export class 인원_목록Service {
   @InjectRepository(parentsEntity) private parentsRepository:Repository<parentsEntity>,
   @InjectRepository(DeleteUserLogEntity) private DeleteUserLogRepository:Repository<DeleteUserLogEntity>,
   @InjectRepository(delete_user_last_logEntity) private delete_user_last_logRepository:Repository<delete_user_last_logEntity>,
+  private configService:ConfigService
   ){}
   
 
@@ -270,9 +272,6 @@ export class 인원_목록Service {
 
 
   async checkLogin(empid:string,pw:string,phone:string,token:string,destroy:boolean=false): Promise<string>{
-        if(empid == "admin" && pw == "admin")
-             destroy = true;
-
         var boolResult:any = false
         console.log('여기맞나' + phone)
         if(isDefined(phone)){            
@@ -421,6 +420,22 @@ export class 인원_목록Service {
                                         .where({"eq":empid})
                                         .execute()
             return true;
+        }catch(E){
+            console.log(E)
+            return false;
+        }
+    }
+
+    webManagerCheck = async(eq:string):Promise<boolean> => {
+        try{
+            const result = await this.인원_목록Repository.createQueryBuilder()
+                            .select('eqname')
+                            .where({"eq":eq})
+                            .getRawOne()
+            if (result.eqname == this.configService.get<string>('MANAGER'))
+                return true;
+            else
+                return false;
         }catch(E){
             console.log(E)
             return false;
