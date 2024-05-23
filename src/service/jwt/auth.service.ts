@@ -1,5 +1,5 @@
 import {JwtService} from '@nestjs/jwt'
-import { 인원_목록DTO } from 'src/dto/인원_목록.dto'
+import { 인원_목록DTO } from 'src/dto/user.dto'
 import { Payload } from 'src/interface/payload'
 
 export class AuthService{

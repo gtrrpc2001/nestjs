@@ -2,7 +2,7 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Request,Response } from "express";
-import { 인원_목록DTO } from "src/dto/인원_목록.dto";
+import { 인원_목록DTO } from "src/dto/user.dto";
 import { AuthService } from "src/service/jwt/auth.service";
 
 @Controller('mslauth')

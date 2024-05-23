@@ -1,7 +1,7 @@
 import {Module } from '@nestjs/common';
 import {CacheModule} from '@nestjs/cache-manager';
 import {SmsService} from '../service/sms.service';
-import { 인원_목록Entity } from 'src/entity/인원_목록.entity';
+import { UserEntity } from 'src/entity/user.entity';
 import { smsController } from 'src/controller/sms.controller';
 import { smsEntity } from 'src/entity/sms.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,7 +11,7 @@ import { CachConfigService } from 'src/service/cache.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([smsEntity,인원_목록Entity]),    
+    TypeOrmModule.forFeature([smsEntity,UserEntity]),    
 //     CacheModule.register({ 
 //     ttl: 5000, // 시간(밀리초)
 //     max: 1000 , // 캐시에 담길 최대 데이터 개수

@@ -1,12 +1,12 @@
 import { Controller, Get,Post,Body,Query, Redirect} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { 인원_목록DTO } from '../dto/인원_목록.dto';
-import { 인원_목록Service } from 'src/service/인원_목록.service';
+import { UserDTO } from '../dto/user.dto';
+import { UserService } from 'src/service/user.service';
 
 @Controller('msl')
 @ApiTags('msl')
-export class 인원_목록Controller {
-  constructor(private readonly 인원_목록Service: 인원_목록Service) {}  
+export class UserController {
+  constructor(private readonly userService: UserService) {}  
 
   @Get('redirect')
   @Redirect('')
@@ -16,14 +16,14 @@ export class 인원_목록Controller {
 
   @Post("/api_getdata")
  async postAll(    
-   @Body() body: 인원_목록DTO): Promise<any> {        
-    return await this.인원_목록Service.gubunKind(body);
+   @Body() body: UserDTO): Promise<any> {        
+    return await this.userService.gubunKind(body);
   } 
 
   @Get("/CheckIDDupe")
  async getCheckIDDupe(       
    @Query('empid') empid:string): Promise<string> {       
-    return await this.인원_목록Service.checkIDDupe(empid);
+    return await this.userService.checkIDDupe(empid);
   }
 
   @Get("/findID")
@@ -31,13 +31,13 @@ export class 인원_목록Controller {
    @Query('성명') name:string,
    @Query('핸드폰') phone:string,
    @Query('생년월일') birth:string): Promise<string> {       
-    return await this.인원_목록Service.findID(name,phone,birth);
+    return await this.userService.findID(name,phone,birth);
   }
 
   @Get("/Profile")
  async getProfile(       
    @Query('empid') empid:string): Promise<string> {     
-    return await this.인원_목록Service.getProfile(empid);
+    return await this.userService.getProfile(empid);
   }
 
   @Get("/CheckLogin")
@@ -48,25 +48,25 @@ export class 인원_목록Controller {
    @Query('token') token:string,
    @Query('destroy') destroy:boolean
    ): Promise<string> {          
-    return await this.인원_목록Service.checkLogin(empid,pw,phone,token,destroy);
+    return await this.userService.checkLogin(empid,pw,phone,token,destroy);
   }
   
   @Get("/checkPhone")
  async checkPhone(       
    @Query('phone') phone:string): Promise<string> {     
-    return await this.인원_목록Service.checkPhone(phone);
+    return await this.userService.checkPhone(phone);
   }
 
   @Get("/appKey")
  async getAppKey(       
    @Query('empid') empid:string): Promise<string> {
-     return await this.인원_목록Service.getAppKey(empid);     
+     return await this.userService.getAppKey(empid);     
   }
 
   @Post("/postTest")
  async postTest(    
-   @Body() body: 인원_목록DTO): Promise<any> {        
-    return await this.인원_목록Service.lastDelete(body.eq);
+   @Body() body: UserDTO): Promise<any> {        
+    return await this.userService.lastDelete(body.eq);
   } 
     
 }

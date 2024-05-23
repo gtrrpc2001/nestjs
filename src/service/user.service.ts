@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { 인원_목록DTO } from '../dto/인원_목록.dto';
+import { UserDTO } from '../dto/user.dto';
 import { commonFun } from 'src/clsfunc/commonfunc';
-import { DeleteUserLogEntity, 인원_목록Entity } from 'src/entity/인원_목록.entity';
+import { DeleteUserLogEntity, UserEntity } from 'src/entity/user.entity';
 import { delete_user_last_logEntity, ecg_raw_history_lastEntity } from 'src/entity/ecg_raw_history_last.entity';
 import { parentsEntity } from 'src/entity/parents.entity';
 import { isDefined } from 'class-validator';
@@ -13,10 +13,9 @@ import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
-export class 인원_목록Service {
-  ecg_raws: 인원_목록Entity[] = [];
+export class UserService {  
   constructor(
-  @InjectRepository(인원_목록Entity) private 인원_목록Repository:Repository<인원_목록Entity>,
+  @InjectRepository(UserEntity) private userRepository:Repository<UserEntity>,
   @InjectRepository(ecg_raw_history_lastEntity) private ecg_raw_history_lastRepository:Repository<ecg_raw_history_lastEntity>,
   @InjectRepository(parentsEntity) private parentsRepository:Repository<parentsEntity>,
   @InjectRepository(DeleteUserLogEntity) private DeleteUserLogRepository:Repository<DeleteUserLogEntity>,
@@ -25,7 +24,7 @@ export class 인원_목록Service {
   ){}
   
 
-  async gubunKind(body:인원_목록DTO): Promise<any>{   
+  async gubunKind(body:UserDTO): Promise<any>{   
     switch(body.kind){
         case "checkIDDupe" :
             return await this.checkIDDupe(body.eq);
@@ -52,7 +51,7 @@ export class 인원_목록Service {
     
   }  
 
-  async userDelete(body:인원_목록DTO):Promise<boolean>{
+  async userDelete(body:UserDTO):Promise<boolean>{
     try{
         let bool = await this.setInsert(this.DeleteUserLogRepository,DeleteUserLogEntity,body);
         let lastInsert = await this.setLastLogInsert(body.eq)
@@ -103,7 +102,7 @@ export class 인원_목록Service {
 
   async setDelete(eq:string):Promise<boolean>{
         try{
-            const result = await this.인원_목록Repository.createQueryBuilder()
+            const result = await this.userRepository.createQueryBuilder()
                                     .delete()                                    
                                     .where({"eq":eq})
                                     .execute()
@@ -128,11 +127,11 @@ export class 인원_목록Service {
     }
   }
 
-  async setProfile(body:인원_목록DTO): Promise<string>{
+  async setProfile(body:UserDTO): Promise<string>{
     var boolResult = false
     try{        
-        const result = await this.인원_목록Repository.createQueryBuilder()
-        .update(인원_목록Entity)        
+        const result = await this.userRepository.createQueryBuilder()
+        .update(UserEntity)        
         .set({
             "eqname":body.eqname,"email":body.email,"phone":body.phone,"sex":body.sex,"height":body.height,"weight":body.weight,
             "age":body.age,"birth":body.birth,"sleeptime":body.sleeptime,"uptime":body.uptime,"bpm":body.bpm,
@@ -153,7 +152,7 @@ export class 인원_목록Service {
     }
   }
 
-  async lastUpdate(body:인원_목록DTO):Promise<boolean>{
+  async lastUpdate(body:UserDTO):Promise<boolean>{
     try{
         await this.ecg_raw_history_lastRepository.createQueryBuilder()
         .update(ecg_raw_history_lastEntity)
@@ -169,10 +168,10 @@ export class 인원_목록Service {
     }
   }
 
-  async checkReg(body:인원_목록DTO): Promise<string>{
+  async checkReg(body:UserDTO): Promise<string>{
     var boolResult = false
     try{    
-       const insertChecked =  await this.setInsert(this.인원_목록Repository,인원_목록Entity,body)
+       const insertChecked =  await this.setInsert(this.userRepository,UserEntity,body)
         if(insertChecked){          
           const datatime = commonFun.getWritetime()
           const result = await this.ecg_raw_history_lastRepository.createQueryBuilder()
@@ -194,7 +193,7 @@ export class 인원_목록Service {
     
   }
 
-  async setInsert(repository:any,entity:any,body:인원_목록DTO):Promise<boolean>{
+  async setInsert(repository:any,entity:any,body:UserDTO):Promise<boolean>{
     try{
         const AESpwd = await pwBcrypt.transformPassword(body.password)
         const result = await repository.createQueryBuilder()
@@ -217,7 +216,7 @@ export class 인원_목록Service {
 
   async getProfile(empid:string): Promise<string>{
     //프로필정보 -- 보호자 번호까지 받아옴    
-   return await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid)
+   return await commonQuery.getProfile(this.userRepository,parentsEntity,empid)
       
   } 
 
@@ -255,7 +254,7 @@ export class 인원_목록Service {
     try{
         let select = 'b.eq,b.phone,a.password,a.differtime'
         let condition = `a.eq = b.eq and b.phone = ${phone}`       
-        const result = await this.인원_목록Repository.createQueryBuilder('a')
+        const result = await this.userRepository.createQueryBuilder('a')
                                 .select(select)
                                 .innerJoin(parentsEntity,'b',condition)
                                 .where({"eq":empid})
@@ -290,7 +289,7 @@ export class 인원_목록Service {
     
     async checkPassword(empid:string,pw:string,destroy:boolean):Promise<any>{
         try{
-            const result:인원_목록Entity = await this.인원_목록Repository.createQueryBuilder('user')
+            const result:UserEntity = await this.userRepository.createQueryBuilder('user')
                             .select('password,differtime')    
                             .where({"eq":empid})
                             .getRawOne()
@@ -313,8 +312,8 @@ export class 인원_목록Service {
     
     async updateLogin_out(empid:string,loginNumber:number):Promise<boolean>{
         try{
-            const result = await this.인원_목록Repository.createQueryBuilder()
-                                            .update(인원_목록Entity)        
+            const result = await this.userRepository.createQueryBuilder()
+                                            .update(UserEntity)        
                                             .set({ "differtime":loginNumber})
                                             .where({"eq":empid})
                                             .execute()                                            
@@ -329,7 +328,7 @@ export class 인원_목록Service {
     var boolResult = false    
     console.log('checkIDDupe')    
     if(isDefined(empid)){
-        const result: 인원_목록Entity[] = await this.인원_목록Repository.createQueryBuilder('user')
+        const result: UserEntity[] = await this.userRepository.createQueryBuilder('user')
                                                 .select('eq')    
                                                 .where({"eq":empid})    
                                                 .getRawMany()
@@ -349,7 +348,7 @@ export class 인원_목록Service {
     async findID(name:string,phone:string,birth:string): Promise<string>{
         var boolResult = false    
         console.log('checkIDDupe') 
-        const result: 인원_목록Entity[] = await this.인원_목록Repository.createQueryBuilder('user')
+        const result: UserEntity[] = await this.userRepository.createQueryBuilder('user')
                                             .select('eq')    
                                             .where({"eqname":name})
                                             .andWhere({"phone":phone})
@@ -364,12 +363,12 @@ export class 인원_목록Service {
         }              
     }
 
-    async updatePWD(body:인원_목록DTO): Promise<string>{
+    async updatePWD(body:UserDTO): Promise<string>{
         var boolResult = false
         try{        
             const AESpwd = await pwBcrypt.transformPassword(body.password)
-            const result = await this.인원_목록Repository.createQueryBuilder()
-                                        .update(인원_목록Entity)        
+            const result = await this.userRepository.createQueryBuilder()
+                                        .update(UserEntity)        
                                         .set({ "password":AESpwd})
                                         .where({"eq":body.eq})
                                         .execute()
@@ -386,7 +385,7 @@ export class 인원_목록Service {
     async checkPhone(phone:string):Promise<string>{
         try{
             var bool = false
-            const result = await this.인원_목록Repository.createQueryBuilder()
+            const result = await this.userRepository.createQueryBuilder()
                             .select('phone')
                             .where({"phone":phone})
                             .getRawMany()
@@ -402,7 +401,7 @@ export class 인원_목록Service {
 
     async getAppKey(empid:string):Promise<string>{
         try{
-            const result:인원_목록Entity = await this.인원_목록Repository.createQueryBuilder('user')
+            const result:UserEntity = await this.userRepository.createQueryBuilder('user')
                             .select('appKey')    
                             .where({"eq":empid})
                             .getRawOne()            
@@ -414,8 +413,8 @@ export class 인원_목록Service {
 
     async updateAppKey(empid:string,appKey:number):Promise<any>{
         try{
-            const result = await this.인원_목록Repository.createQueryBuilder()
-                                        .update(인원_목록Entity)        
+            const result = await this.userRepository.createQueryBuilder()
+                                        .update(UserEntity)        
                                         .set({ "appKey":appKey})
                                         .where({"eq":empid})
                                         .execute()
@@ -428,7 +427,7 @@ export class 인원_목록Service {
 
     webManagerCheck = async(eq:string):Promise<boolean> => {
         try{
-            const result = await this.인원_목록Repository.createQueryBuilder()
+            const result = await this.userRepository.createQueryBuilder()
                             .select('eqname')
                             .where({"eq":eq})
                             .getRawOne()

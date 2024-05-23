@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { 인원_목록Service } from '../인원_목록.service';
-import { 인원_목록Entity } from 'src/entity/인원_목록.entity';
+import { 인원_목록Service } from '../user.service';
+import { 인원_목록Entity } from 'src/entity/user.entity';
 
 @Injectable()
 export class GoogleService{

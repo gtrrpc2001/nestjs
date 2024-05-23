@@ -9,9 +9,9 @@ import { commonQuery } from 'src/clsfunc/commonQuery';
 import { parentsEntity } from 'src/entity/parents.entity';
 import { firebasenoti } from 'src/alarm/firebasenoti';
 import { ConfigService } from '@nestjs/config';
-import { 인원_목록Entity } from 'src/entity/인원_목록.entity';
-import { ecg_csv_ecgdataEntity } from 'src/entity/ecg_csv_ecgdata.entity';
+import { UserEntity } from 'src/entity/user.entity';
 import { alarmController } from 'src/alarm/alarmController';
+import { ecg_byteEntity } from 'src/entity/ecg_byte.entity';
 
 @Injectable()
 export class ecg_csv_ecgdata_arrService {
@@ -19,8 +19,8 @@ export class ecg_csv_ecgdata_arrService {
   constructor(
     @InjectRepository(ecg_csv_ecgdata_arrEntity) private ecg_csv_ecgdata_arrRepository:Repository<ecg_csv_ecgdata_arrEntity>,
     @InjectRepository(parentsEntity) private parentsRepository:Repository<parentsEntity>,   
-    @InjectRepository(인원_목록Entity) private 인원_목록Repository:Repository<인원_목록Entity>, 
-    @InjectRepository(ecg_csv_ecgdataEntity) private ecg_csv_ecgdataRepository:Repository<ecg_csv_ecgdataEntity>,
+    @InjectRepository(UserEntity) private userRepository:Repository<UserEntity>, 
+    @InjectRepository(ecg_byteEntity) private ecg_byteRepository:Repository<ecg_byteEntity>,
     private configService:ConfigService
     ){}
 
@@ -104,7 +104,7 @@ export class ecg_csv_ecgdata_arrService {
    async countArr (empid:string,startDate:string,endDate:string): Promise<string>{        
     try{
       let Value = await this.onlyArrCount(empid,startDate,endDate)
-      const info = await commonQuery.getProfile(this.인원_목록Repository,parentsEntity,empid,true)
+      const info = await commonQuery.getProfile(this.userRepository,parentsEntity,empid,true)
       if(!Value.includes('result') && !info.includes('result')){
        const arr = Value?.replace('{','')       
        const profile = info?.replace('}',',')
@@ -213,10 +213,10 @@ export class ecg_csv_ecgdata_arrService {
     const subSelect = 'eq,writetime,ecgpacket'
     const onlyDate = writetime.split(' ')[0]
     try{
-      const result = await this.ecg_csv_ecgdataRepository.createQueryBuilder()
+      const result = await this.ecg_byteRepository.createQueryBuilder()
       .subQuery()
       .select(subSelect)
-      .from(ecg_csv_ecgdataEntity,'')
+      .from(ecg_byteEntity,'')
       .where(`eq = '${eq}'`)
       .andWhere(`writetime <= '${writetime}'`)
       .andWhere(`writetime >= '${onlyDate}'`)

@@ -1,7 +1,7 @@
 import { IsNumber,IsOptional,IsString } from "class-validator";
 import { Double,Int32 } from "typeorm";
 
-export class 인원_목록DTO{
+export class UserDTO{
     
     @IsOptional()
     @IsString()
