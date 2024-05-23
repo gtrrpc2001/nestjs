@@ -2,7 +2,7 @@
 import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Request,Response } from "express";
-import { 인원_목록DTO } from "src/dto/user.dto";
+import { UserDTO } from "src/dto/user.dto";
 import { AuthService } from "src/service/jwt/auth.service";
 
 @Controller('mslauth')
@@ -12,7 +12,7 @@ export class AuthController{
     ){}
 
     @Post('/refreshToken')
-    async signIn(@Body() body:인원_목록DTO, @Res() res:Response):Promise<any>{
+    async signIn(@Body() body:UserDTO, @Res() res:Response):Promise<any>{
         const jwt = await this.authService.validateUser(body);              
         res.setHeader('Authorization','Bearer ' + jwt.accessToken);
         return res.json(jwt);

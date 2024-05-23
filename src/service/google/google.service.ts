@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { 인원_목록Service } from '../user.service';
-import { 인원_목록Entity } from 'src/entity/user.entity';
+import { UserService } from '../user.service';
+import { UserEntity } from 'src/entity/user.entity';
 
 @Injectable()
 export class GoogleService{
     constructor(
-        private readonly 인원_목록service:인원_목록Service
+        private readonly userservice:UserService
     ){
 
     }
 
     async validateAndSaveUser(info:any):Promise<any>{
         const {email,refreshToken} = info
-        const newUser = await this.인원_목록service.checkIDDupe(email);
+        const newUser = await this.userservice.checkIDDupe(email);
 
         if(newUser){
             //const newUser = await this.userService.createSocialUser(socialLoginInfoDto);
@@ -32,7 +32,7 @@ export class GoogleService{
     }
 
     async findUserById(id:string):Promise<string>{
-       const user =  await this.인원_목록service.getProfile(id)
+       const user =  await this.userservice.getProfile(id)
        return user
     }
 }

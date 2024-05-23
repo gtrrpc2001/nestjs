@@ -1,5 +1,5 @@
 import {JwtService} from '@nestjs/jwt'
-import { 인원_목록DTO } from 'src/dto/user.dto'
+import { UserDTO } from 'src/dto/user.dto'
 import { Payload } from 'src/interface/payload'
 
 export class AuthService{
@@ -7,7 +7,7 @@ export class AuthService{
         private jwtService:JwtService
     ){}
 
-    async validateUser(body:인원_목록DTO):Promise<{accessToken: string} | undefined>{
+    async validateUser(body:UserDTO):Promise<{accessToken: string} | undefined>{
 
         // 유저 이메일 과 비밀번호로 체크 후
         const email = ''
