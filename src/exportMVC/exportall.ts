@@ -13,10 +13,8 @@ import { ecg_byteModule } from '../module/ecg_byte.module';
 import { smsModule } from '../module/sms.module';
 import { app_logModule } from '../module/app_log.module';
 import { app_bleModule } from '../module/app_ble.module';
-import { AuthModule } from '../module/auth.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PrometheusService } from '../service/prometheus.service';
-import { GoogleModule } from '../module/google.module';
 import { ecg_stressModule } from '../module/ecg_stress.module';
 
 export class allModule {
@@ -43,8 +41,8 @@ export class allModule {
     smsModule,
     app_logModule,
     app_bleModule,
-    AuthModule,
-    GoogleModule,
+    // AuthModule,
+    // GoogleModule,
     ecg_stressModule
 
     // RedisSessionModule
