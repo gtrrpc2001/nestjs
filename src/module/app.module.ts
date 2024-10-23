@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { allModule } from 'src/exportMVC/exportall';
+import { allModule } from '../exportMVC/exportall';
 
 
 
@@ -8,4 +8,4 @@ import { allModule } from 'src/exportMVC/exportall';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }

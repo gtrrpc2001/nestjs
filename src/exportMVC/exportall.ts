@@ -6,7 +6,7 @@ import { ecg_raw_history_lastModule } from '../module/ecg_raw_history_last.modul
 import { admin_login_logModule } from '../module/admin_login_log.module';
 import { parentsModule } from '../module/parents.module';
 import { ConfigModule } from '@nestjs/config';
-import { MySqlMslConfigService } from '../factory/mysqlconfig.service';
+import { MySqlMslConfigService } from '../service/mysqlconfig.service';
 import { appversionModule } from '../module/appversion.module';
 import { UserModule } from '../module/user.module';
 import { ecg_byteModule } from '../module/ecg_byte.module';
@@ -15,17 +15,9 @@ import { app_logModule } from '../module/app_log.module';
 import { app_bleModule } from '../module/app_ble.module';
 import { AuthModule } from '../module/auth.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
-import { PrometheusService } from 'factory/prometheus.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { MongoConfig } from 'factory/mongoconfig.service';
-import { ExerciseModule } from 'module/exercise.module';
-import { GoogleModule } from 'module/google.module';
-import { AppleModule } from 'module/apple.module';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { ServeStaticFactory } from 'factory/serveStatic.factory';
-import { RedisModule } from '@nestjs-modules/ioredis';
-import { RedisConfig } from 'factory/redis.factory';
-import { ecg_stressModule } from 'module/ecg_stress.module';
+import { PrometheusService } from '../service/prometheus.service';
+import { GoogleModule } from '../module/google.module';
+import { ecg_stressModule } from '../module/ecg_stress.module';
 
 export class allModule {
   static appImport = [
@@ -38,14 +30,7 @@ export class allModule {
       useClass: MySqlMslConfigService,
       inject: [MySqlMslConfigService],
     }),
-
-    MongooseModule.forRootAsync({ useClass: MongoConfig, inject: [MongoConfig] }),
     PrometheusModule.registerAsync({ global: true, useClass: PrometheusService }),
-    ServeStaticModule.forRootAsync({ useClass: ServeStaticFactory }),
-    RedisModule.forRootAsync({
-      useClass: RedisConfig,
-      inject: [RedisConfig]
-    }),
     ecg_csv_ecgdata_arrModule,
     ecg_csv_bpmdayModule,
     ecg_csv_datadayModule,
@@ -59,9 +44,7 @@ export class allModule {
     app_logModule,
     app_bleModule,
     AuthModule,
-    ExerciseModule,
     GoogleModule,
-    AppleModule,
     ecg_stressModule
 
     // RedisSessionModule
