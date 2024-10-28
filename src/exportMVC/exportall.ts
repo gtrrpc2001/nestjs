@@ -16,6 +16,7 @@ import { app_bleModule } from '../module/app_ble.module';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PrometheusService } from '../service/prometheus.service';
 import { ecg_stressModule } from '../module/ecg_stress.module';
+import { Hospital_patientModule } from '../module/hospital_patient.module';
 
 export class allModule {
   static appImport = [
@@ -43,7 +44,8 @@ export class allModule {
     app_bleModule,
     // AuthModule,
     // GoogleModule,
-    ecg_stressModule
+    ecg_stressModule,
+    Hospital_patientModule
 
     // RedisSessionModule
   ];
