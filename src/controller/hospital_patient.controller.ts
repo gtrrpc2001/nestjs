@@ -1,9 +1,7 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { ExerciseService } from '@service/exercise.service';
-import { Hospital_patientService } from '@service/hospital_patient.service';
-import { ExerciseDto } from 'dto/exercise.dto';
-import { Hospital_patientDto } from 'dto/hospital_patient.dto';
+import { Hospital_patientService } from '../service/hospital_patient.service';
+import { Hospital_patientDto } from '../dto/hospital_patient.dto';
 
 
 @Controller('hospital')

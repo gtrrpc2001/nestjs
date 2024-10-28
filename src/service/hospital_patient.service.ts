@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Hospital_patientDto } from 'dto/hospital_patient.dto';
-import { Hospital_patientEntity, Hospital_patient_logEntity } from 'entity/hospital_patient.entity';
+import { Hospital_patientDto } from '../dto/hospital_patient.dto';
+import { Hospital_patientEntity, Hospital_patient_logEntity } from '../entity/hospital_patient.entity';
 import {
     Repository,
     MoreThanOrEqual,
