@@ -21,8 +21,23 @@ export class ecg_raw_history_lastService {
     switch (body.kind) {
       case 'getdata':
         return this.getEcg_raw_history_last(body.eq);
+      case 'ecgSerialNumber':
+        return await this.setEcgSerialNumber_update(body);
       case null:
         return false;
+    }
+  }
+
+  async setEcgSerialNumber_update(body: ecg_raw_history_lastDTO): Promise<boolean> {
+    try {
+      const result = await this.ecg_raw_history_lastRepository.createQueryBuilder()
+        .update(ecg_raw_history_lastEntity).set({ log: body.log })
+        .where({ eq: body.eq })
+        .execute()
+      return result.affected > 0;
+    } catch (error) {
+      console.log(error);
+      return false;
     }
   }
 
@@ -69,7 +84,7 @@ export class ecg_raw_history_lastService {
     const select =
       'a.idx,a.eq,eqname,a.bpm,a.hrv,mid(a.temp,1,5) temp,' +
       'b.step step, b.distanceKM distanceKM, b.cal cal, b.calexe calexe, b.arrcnt arrcnt,a.timezone,' +
-      'a.writetime,a.battery, ' +
+      'a.writetime,a.battery,a.log, ' +
       'case ' +
       "when MID(a.timezone,1,1) = '-' then DATE_ADD(a.writetime,INTERVAL cast(MID(a.timezone,2,2) AS unsigned) + 9 HOUR)" +
       " when MID(a.timezone,1,1) = '+' AND cast(MID(a.timezone,2,2) AS UNSIGNED) < 9 AND a.timezone NOT LIKE '%KR%' then DATE_ADD(a.writetime,INTERVAL 9 - cast(MID(a.timezone,2,2) AS unsigned) HOUR)" +
