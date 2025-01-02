@@ -21,7 +21,7 @@ jobs:
           project: gtrrpc2001/msl_web_backend
           stage: main
           yaml: >
-            name: webbackend
+            name: nestjs
 
             app: node@22
 
