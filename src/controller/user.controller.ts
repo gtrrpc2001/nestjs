@@ -8,12 +8,6 @@ import { UserService } from '../service/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Get('redirect')
-  @Redirect('')
-  async redirect(): Promise<any> {
-    return ''
-  }
-
   @Post("/api_getdata")
   async postAll(
     @Body() body: UserDTO): Promise<any> {
@@ -40,6 +34,7 @@ export class UserController {
     return await this.userService.getProfile(empid);
   }
 
+  // web 사용중
   @Get("/CheckLogin")
   async getCheckLogin(
     @Query('empid') empid: string,
@@ -67,6 +62,13 @@ export class UserController {
   async postTest(
     @Body() body: UserDTO): Promise<any> {
     return await this.userService.lastDelete(body.eq);
+  }
+
+
+  // 사용중
+  @Get("/managerCheck")
+  async getManagerCheck(@Query('empid') empid: string): Promise<boolean> {
+    return await this.userService.webManagerCheck(empid);
   }
 
 }

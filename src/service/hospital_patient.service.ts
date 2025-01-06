@@ -9,13 +9,14 @@ import {
     MoreThan,
     LessThan,
 } from 'typeorm';
+import { db } from 'src/clsfunc/commonfunc';
 
 @Injectable()
 export class Hospital_patientService {
     constructor(
-        @InjectRepository(Hospital_patientEntity)
+        @InjectRepository(Hospital_patientEntity, db.deploy)
         private hospital_patientRepository: Repository<Hospital_patientEntity>,
-        @InjectRepository(Hospital_patient_logEntity)
+        @InjectRepository(Hospital_patient_logEntity, db.deploy)
         private hospital_patientLogRepository: Repository<Hospital_patient_logEntity>,
     ) { }
 

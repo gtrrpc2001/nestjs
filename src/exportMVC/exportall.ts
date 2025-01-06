@@ -6,7 +6,7 @@ import { ecg_raw_history_lastModule } from '../module/ecg_raw_history_last.modul
 import { admin_login_logModule } from '../module/admin_login_log.module';
 import { parentsModule } from '../module/parents.module';
 import { ConfigModule } from '@nestjs/config';
-import { MySqlMslConfigService } from '../service/mysqlconfig.service';
+import { MySqlMslConfigService, MySqlMsl_testConfigService } from '../service/mysqlconfig.service';
 import { appversionModule } from '../module/appversion.module';
 import { UserModule } from '../module/user.module';
 import { ecg_byteModule } from '../module/ecg_byte.module';
@@ -17,6 +17,11 @@ import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { PrometheusService } from '../service/prometheus.service';
 import { ecg_stressModule } from '../module/ecg_stress.module';
 import { Hospital_patientModule } from '../module/hospital_patient.module';
+import { db } from 'src/clsfunc/commonfunc';
+
+
+
+
 
 export class allModule {
   static appImport = [
@@ -26,9 +31,17 @@ export class allModule {
     }),
 
     TypeOrmModule.forRootAsync({
+      useClass: MySqlMsl_testConfigService,
+      inject: [MySqlMsl_testConfigService],
+      name: db.test
+    }),
+
+    TypeOrmModule.forRootAsync({
       useClass: MySqlMslConfigService,
       inject: [MySqlMslConfigService],
+      name: db.deploy
     }),
+
     PrometheusModule.registerAsync({ global: true, useClass: PrometheusService }),
     ecg_csv_ecgdata_arrModule,
     ecg_csv_bpmdayModule,
@@ -42,7 +55,6 @@ export class allModule {
     smsModule,
     app_logModule,
     app_bleModule,
-    // AuthModule,
     // GoogleModule,
     ecg_stressModule,
     Hospital_patientModule

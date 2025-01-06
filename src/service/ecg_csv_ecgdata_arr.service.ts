@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ecg_csv_ecgdataDTO } from '../dto/ecg_csv_ecgdata.dto';
 import { ecg_csv_ecgdata_arrEntity } from '../entity/ecg_csv_ecgdata_arr.entity';
-import { commonFun } from '../clsfunc/commonfunc';
+import { commonFun, db } from '../clsfunc/commonfunc';
 import { Repository, MoreThan, LessThan, Between } from 'typeorm';
 import { commonQuery } from '../clsfunc/commonQuery';
 import { parentsEntity } from '../entity/parents.entity';
@@ -10,21 +10,21 @@ import { ConfigService } from '@nestjs/config';
 import { UserEntity } from '../entity/user.entity';
 import { alarmController } from '../alarm/alarmController';
 import { ecg_byteEntity } from '../entity/ecg_byte.entity';
-import { UserCommonQuerycheckIDDupe } from './user.commonQuery';
+import { ArrWritetime, CountArr, GraphArrCount, OnlyArrCount } from './common.service.function/arr.common.function';
 
 @Injectable()
 export class ecg_csv_ecgdata_arrService {
   constructor(
-    @InjectRepository(ecg_csv_ecgdata_arrEntity)
+    @InjectRepository(ecg_csv_ecgdata_arrEntity, db.deploy)
     private ecg_csv_ecgdata_arrRepository: Repository<ecg_csv_ecgdata_arrEntity>,
-    @InjectRepository(parentsEntity)
+    @InjectRepository(parentsEntity, db.deploy)
     private parentsRepository: Repository<parentsEntity>,
-    @InjectRepository(UserEntity)
+    @InjectRepository(UserEntity, db.deploy)
     private userRepository: Repository<UserEntity>,
-    @InjectRepository(ecg_byteEntity)
+    @InjectRepository(ecg_byteEntity, db.deploy)
     private ecg_byteRepository: Repository<ecg_byteEntity>,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   table = 'ecg_csv_ecgdata_arr';
   select = 'writetime,ecgpacket';
@@ -111,117 +111,36 @@ export class ecg_csv_ecgdata_arrService {
   }
 
   async onlyArrCount(
-    empid: string,
+    eq: string,
     startDate: string,
     endDate: string,
   ): Promise<string> {
-    try {
-      console.log(empid, startDate, endDate);
-      const result = await this.ecg_csv_ecgdata_arrRepository
-        .createQueryBuilder()
-        .select('COUNT(*) as arrCnt')
-        .where({ eq: empid })
-        .andWhere({ writetime: MoreThan(startDate) })
-        .andWhere({ writetime: LessThan(endDate) })
-        .andWhere('address is null', { address: null })
-        .getRawOne();
-      console.log(result);
-      let Value =
-        result.length != 0 && empid != null
-          ? commonFun.converterJson(result)
-          : 'result = 0';
-      return Value;
-    } catch (E) {
-      console.log(E);
-      return 'result = 0';
-    }
+    return await OnlyArrCount(this.ecg_csv_ecgdata_arrRepository, eq, startDate, endDate);
   }
 
   async countArr(
-    empid: string,
+    eq: string,
     startDate: string,
     endDate: string,
   ): Promise<string> {
-    try {
-      let Value = await this.onlyArrCount(empid, startDate, endDate);
-      const info = await UserCommonQuerycheckIDDupe.getProfile(
-        this.userRepository,
-        parentsEntity,
-        empid,
-        true,
-      );
-      if (!Value.includes('result') && !info.includes('result')) {
-        const arr = Value?.replace('{', '');
-        const profile = info?.replace('}', ',');
-        Value = profile + arr;
-      }      
-      return Value;
-    } catch (E) {
-      console.log(E);
-    }
+    return await CountArr(this.ecg_csv_ecgdata_arrRepository, this.userRepository, eq, startDate, endDate);
   }
 
   async graphArrCount(
-    empid: string,
+    eq: string,
     startDate: string,
     endDate: string,
     len: number,
   ): Promise<string> {
-    try {
-      const startLen = commonFun.getStartLen(len);
-      console.log(`${startLen} -- ${len}`);
-      const result = await this.ecg_csv_ecgdata_arrRepository
-        .createQueryBuilder('ecg_csv_ecgdata_arr')
-        .select(`MID(writetime,${startLen},2) writetime,COUNT(ecgpacket) count`)
-        .where({ eq: empid })
-        .andWhere({ writetime: MoreThan(startDate) })
-        .andWhere({ writetime: LessThan(endDate) })
-        .groupBy(`MID(writetime,${startLen},2)`)
-        .having('COUNT(ecgpacket)')
-        .orderBy('writetime', 'ASC')
-        .getRawMany();
-      const Value =
-        result.length != 0 && empid != null
-          ? commonFun.converterJson(result)
-          : 'result = 0';
-      return Value;
-    } catch (E) {
-      console.log(E);
-    }
+    return await GraphArrCount(this.ecg_csv_ecgdata_arrRepository, eq, startDate, endDate, len);
   }
 
   async arrWritetime(
-    empid: string,
+    eq: string,
     startDate: string,
     endDate: string,
   ): Promise<string> {
-    try {
-      let result;
-      if (endDate != '') {
-        result = await this.ecg_csv_ecgdata_arrRepository
-          .createQueryBuilder('ecg_csv_ecgdata_arr')
-          .select('writetime,address')
-          .where({ eq: empid })
-          .andWhere({ writetime: MoreThan(startDate) })
-          .andWhere({ writetime: LessThan(endDate) })
-          .getRawMany();
-      } else {
-        result = await this.ecg_csv_ecgdata_arrRepository
-          .createQueryBuilder()
-          .select('ecgpacket')
-          .where({ eq: empid })
-          .andWhere({ writetime: startDate })
-          .getRawMany();
-      }
-      const Value =
-        result.length != 0 && empid != null
-          ? commonFun.converterJson(result)
-          : 'result = 0';
-      console.log(empid);
-      return Value;
-    } catch (E) {
-      console.log(E);
-    }
+    return await ArrWritetime(this.ecg_csv_ecgdata_arrRepository, eq, startDate, endDate)
   }
 
   async testArr(

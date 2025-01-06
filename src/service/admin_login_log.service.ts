@@ -3,11 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { admin_login_logEntity } from '../entity/admin_login_log.entity';
 import { admin_login_logDTO } from '../dto/admin_login_log.dto';
+import { db } from 'src/clsfunc/commonfunc';
 
 @Injectable()
 export class admin_login_logService {
-  log_raws: admin_login_logEntity[] = [];
-  constructor(@InjectRepository(admin_login_logEntity) private admin_login_logRepository: Repository<admin_login_logEntity>) { }
+  constructor(@InjectRepository(admin_login_logEntity, db.deploy) private admin_login_logRepository: Repository<admin_login_logEntity>) { }
 
   async LogInsert(body: admin_login_logDTO): Promise<any> {
     var boolResult = false

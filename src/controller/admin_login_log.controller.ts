@@ -9,15 +9,10 @@ import { admin_login_logService } from '../service/admin_login_log.service';
 export class admin_login_logController {
   constructor(private readonly admin_login_logService: admin_login_logService) { }
 
+  // 사용중
   @Post("/api_getdata")
   async postLog(
     @Body() body: admin_login_logDTO): Promise<any> {
     return await this.admin_login_logService.LogInsert(body);
   }
-
-  @Get("/test")
-  getTest(): string {
-    return ''
-  }
-
 }

@@ -5,12 +5,13 @@ import { delete_user_last_logEntity, ecg_raw_history_lastEntity } from '../entit
 import { parentsEntity } from '../entity/parents.entity';
 import { DeleteUserLogEntity, UserEntity } from '../entity/user.entity';
 import { UserService } from '../service/user.service';
+import { db } from 'src/clsfunc/commonfunc';
 
 
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([UserEntity, ecg_raw_history_lastEntity, parentsEntity, DeleteUserLogEntity, delete_user_last_logEntity])
+        TypeOrmModule.forFeature([UserEntity, ecg_raw_history_lastEntity, parentsEntity, DeleteUserLogEntity, delete_user_last_logEntity], db.deploy)
     ],
     controllers: [UserController],
     providers: [UserService]

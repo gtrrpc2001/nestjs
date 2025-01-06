@@ -113,3 +113,5 @@ export class commonFun {
   }
 
 }
+
+export const db = { test: 'test', deploy: 'deploy' }
