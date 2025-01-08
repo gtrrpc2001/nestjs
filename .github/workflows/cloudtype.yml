@@ -40,6 +40,8 @@ jobs:
                   value: ${{ secrets.PASSWORD }}
                 - name: DATABASE
                   value: ${{ secrets.DATABASE }}
+                - name: TDATABASE
+                  value: ${{ secrets.TDATABASE }}
                 - name: NAVER_ACCESSKEY
                   value: ${{ secrets.NAVER_ACCESSKEY }}
                 - name: NAVER_SECRETKEY
@@ -64,6 +66,14 @@ jobs:
                   value: ${{ secrets.BUSINESS }}
                 - name: BUSINESS2
                   value: ${{ secrets.BUSINESS2 }}
+                - name: COR_ORIGIN_DOMAIN1
+                  value: ${{ secrets.COR_ORIGIN_DOMAIN1 }}
+                - name: COR_ORIGIN_DOMAIN2
+                  value: ${{ secrets.COR_ORIGIN_DOMAIN2 }}
+                - name: COR_ORIGIN_DOMAIN3
+                  value: ${{ secrets.COR_ORIGIN_DOMAIN3 }}
+                - name: COR_ORIGIN_DOMAIN4
+                  value: ${{ secrets.COR_ORIGIN_DOMAIN4 }}
                 - name: CLOUDTYPE_API_KEY
                   value: ${{ secrets.CLOUDTYPE_API_KEY }}
                 - name: CLOUDTYPE_BASE_API
