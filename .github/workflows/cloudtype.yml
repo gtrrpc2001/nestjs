@@ -79,6 +79,7 @@ jobs:
                   value: ${{ secrets.CLOUDTYPE_BASE_API }}
                 - name: SEND_DATA_SECRET_KEY
                   value: ${{ secrets.SEND_DATA_SECRET_KEY }}
+                  
               ports: ${{ secrets.MAIN_PORT }}
               build: npm run build
               start: npm run start:prod
