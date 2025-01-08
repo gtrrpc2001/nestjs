@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { app_logEntity } from 'src/entity/app_log.entity';
 import { CloudTypeDTO } from 'src/dto/cloudtype.dto';
 import axios from 'axios';
 import { Method } from 'src/interface/cloudtype.enum';
 import { ConfigService } from '@nestjs/config';
+import { encrypt } from 'src/clsfunc/secertFunc';
 
 @Injectable()
 export class CloudTypeService {
@@ -52,7 +52,7 @@ export class CloudTypeService {
                 });
                 return arr;
             }));
-            return result.flat();
+            return encrypt(result.flat());
         } catch (error) {
             console.log(error)
             return error;
