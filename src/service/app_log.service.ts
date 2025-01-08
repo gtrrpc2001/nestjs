@@ -7,7 +7,6 @@ import { db } from 'src/clsfunc/commonfunc';
 
 @Injectable()
 export class app_logService {
-  log_raws: app_logEntity[] = [];
   constructor(@InjectRepository(app_logEntity, db.deploy) private app_logRepository: Repository<app_logEntity>) { }
 
   async LogInsert(body: admin_login_logDTO): Promise<any> {

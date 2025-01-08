@@ -18,6 +18,7 @@ import { PrometheusService } from '../service/prometheus.service';
 import { ecg_stressModule } from '../module/ecg_stress.module';
 import { Hospital_patientModule } from '../module/hospital_patient.module';
 import { db } from 'src/clsfunc/commonfunc';
+import { CloudTypeModule } from 'src/module/cloudtype.module';
 
 
 
@@ -55,7 +56,7 @@ export class allModule {
     smsModule,
     app_logModule,
     app_bleModule,
-    // GoogleModule,
+    CloudTypeModule,
     ecg_stressModule,
     Hospital_patientModule
 

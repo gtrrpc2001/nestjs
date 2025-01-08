@@ -18,9 +18,6 @@ export class MySqlMsl_testConfigService implements TypeOrmOptionsFactory {
             synchronize: false,
             dateStrings: true,
         };
-
-        console.log('DB Test Config Options:', options); // 로그 추가
-
         return options;
     }
 }
