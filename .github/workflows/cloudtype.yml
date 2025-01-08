@@ -74,6 +74,10 @@ jobs:
                   value: ${{ secrets.COR_ORIGIN_DOMAIN3 }}
                 - name: COR_ORIGIN_DOMAIN4
                   value: ${{ secrets.COR_ORIGIN_DOMAIN4 }}
+                - name: CLOUDTYPE_API_KEY
+                  value: ${{ secrets.CLOUDTYPE_API_KEY }}
+                - name: CLOUDTYPE_BASE_API
+                  value: ${{ secrets.CLOUDTYPE_BASE_API }}
               ports: ${{ secrets.MAIN_PORT }}
               build: npm run build
               start: npm run start:prod
