@@ -1,4 +1,4 @@
-import { Controller, Put, Post, Body } from '@nestjs/common';
+import { Controller, Put, Post, Body, Get, Options, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { decrypt } from 'src/clsfunc/secertFunc';
 import { CloudTypeDTO } from 'src/dto/cloudtype.dto';
@@ -9,6 +9,8 @@ import { CloudTypeService } from 'src/service/cloudtype.service';
 @ApiTags('CloudType')
 export class CloudTypeController {
     constructor(private readonly cloudTypeService: CloudTypeService) { }
+    // @Options
+
     @Post("/stat")
     async stat() {
         return await this.cloudTypeService.stat();
