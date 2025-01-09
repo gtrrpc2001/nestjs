@@ -52,7 +52,7 @@ export class CloudTypeService {
                 });
                 return arr;
             }));
-            return encrypt(result.flat());
+            return result.flat();
         } catch (error) {
             console.log(error)
             return error;

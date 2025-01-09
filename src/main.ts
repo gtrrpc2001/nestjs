@@ -27,9 +27,9 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   app.enableCors({
-    origin: '*',
-    //
-    // [process.env.COR_ORIGIN_DOMAIN1, process.env.COR_ORIGIN_DOMAIN2, process.env.COR_ORIGIN_DOMAIN3, process.env.COR_ORIGIN_DOMAIN4],
+    origin: [process.env.COR_ORIGIN_DOMAIN1, process.env.COR_ORIGIN_DOMAIN2, process.env.COR_ORIGIN_DOMAIN3, process.env.COR_ORIGIN_DOMAIN4],
+    //'*'
+    // ,
     methods: ['POST', 'PUT', 'DELETE', 'GET'],
     credentials: true
   });

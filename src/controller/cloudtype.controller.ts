@@ -17,14 +17,14 @@ export class CloudTypeController {
     }
 
     @Post("/start")
-    async start(@Body() encryptData: { data: string }) {
-        const body = decrypt<CloudTypeDTO>(encryptData.data)
+    async start(@Body() body: CloudTypeDTO) {
+        // const body = decrypt<CloudTypeDTO>(encryptData.data)
         return await this.cloudTypeService.start(body);
     }
 
     @Post("/stop")
-    async stop(@Body() encryptData: { data: string }) {
-        const body = decrypt<CloudTypeDTO>(encryptData.data)
+    async stop(@Body() body: CloudTypeDTO) {
+        // const body = decrypt<CloudTypeDTO>(encryptData.data)
         return await this.cloudTypeService.stop(body);
     }
 }
