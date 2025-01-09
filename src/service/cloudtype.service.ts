@@ -60,22 +60,23 @@ export class CloudTypeService {
 
     async start(body: CloudTypeDTO) {
         try {
-            console.log(body)
             const url = `${this.url}/${body.projectName}/stage/main/deployment/${body.name}/start`
-            return await this.api(Method.put, url);
+            await this.api(Method.put, url);
+            return true;
         } catch (error) {
             console.log(error)
-            return error;
+            return false;
         }
     }
 
     async stop(body: CloudTypeDTO) {
         try {
             const url = `${this.url}/${body.projectName}/stage/main/deployment/${body.name}/stop`
-            return await this.api(Method.put, url);
+            await this.api(Method.put, url);
+            return true;
         } catch (error) {
             console.log(error)
-            return error;
+            return false;
         }
     }
 }
