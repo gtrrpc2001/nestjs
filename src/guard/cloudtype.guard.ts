@@ -9,7 +9,6 @@ export class CloudTypeGuard implements CanActivate {
         try {
             const request = context.switchToHttp().getRequest<Request>();
             const headers = request.headers['cloud-type'];
-            console.log(headers)
             const checkedHeader = await commonFun.validateHeader(headers);
             if (!checkedHeader)
                 throw new HttpException('Invalid headers', HttpStatus.BAD_REQUEST);
