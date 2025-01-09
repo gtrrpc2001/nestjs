@@ -1,10 +1,10 @@
-import { Controller, Put, Post, Body, Get, Options, Query } from '@nestjs/common';
+import { Controller, Put, Post, Body, Get, Options, Query, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { decrypt } from 'src/clsfunc/secertFunc';
 import { CloudTypeDTO } from 'src/dto/cloudtype.dto';
+import { CloudTypeGuard } from 'src/guard/cloudtype.guard';
 import { CloudTypeService } from 'src/service/cloudtype.service';
 
-
+@UseGuards(CloudTypeGuard)
 @Controller('CloudType')
 @ApiTags('CloudType')
 export class CloudTypeController {

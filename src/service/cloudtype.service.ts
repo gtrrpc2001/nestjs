@@ -3,7 +3,6 @@ import { CloudTypeDTO } from 'src/dto/cloudtype.dto';
 import axios from 'axios';
 import { Method } from 'src/interface/cloudtype.enum';
 import { ConfigService } from '@nestjs/config';
-import { encrypt } from 'src/clsfunc/secertFunc';
 
 @Injectable()
 export class CloudTypeService {

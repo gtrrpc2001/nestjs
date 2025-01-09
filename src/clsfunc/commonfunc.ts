@@ -1,5 +1,6 @@
 import { isDefined } from 'class-validator';
 import { parentsEntity } from '../entity/parents.entity';
+import { pwBcrypt } from './pwAES';
 export class commonFun {
 
   static converterJson(result: any) {
@@ -110,6 +111,11 @@ export class commonFun {
     const uint16Arr = new Uint16Array(uint8Arr.buffer);
     const newArr = [...uint16Arr]
     return newArr
+  }
+
+  static async validateHeader(key: string) {
+    const originKey = Buffer.from(key, 'base64');
+    return await pwBcrypt.validatePwd(process.env.SEND_DATA_SECRET_KEY, originKey.toString());
   }
 
 }
