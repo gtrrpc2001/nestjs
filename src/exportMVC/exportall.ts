@@ -19,6 +19,7 @@ import { ecg_stressModule } from '../module/ecg_stress.module';
 import { Hospital_patientModule } from '../module/hospital_patient.module';
 import { db } from 'src/clsfunc/commonfunc';
 import { CloudTypeModule } from 'src/module/cloudtype.module';
+import { ProductModule } from 'src/module/product.module';
 
 
 
@@ -58,8 +59,8 @@ export class allModule {
     app_bleModule,
     CloudTypeModule,
     ecg_stressModule,
-    Hospital_patientModule
-
+    ProductModule,
+    Hospital_patientModule,
     // RedisSessionModule
   ];
 }
