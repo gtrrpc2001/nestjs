@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { db } from 'src/clsfunc/commonfunc';
 import { StockEntity } from 'src/entity/stock.entity';
-import { StockDTO } from 'src/dto/stock.dto';
+import { InsertStockDTO, StockDTO } from 'src/dto/stock.dto';
 import { RegistStockQtyDTO } from 'src/dto/regist_stock_qty.dto';
 import { StockHistoryEntity } from 'src/entity/stockhistory.entity';
 
@@ -25,18 +25,33 @@ export class ProductService {
         const result: StockHistoryEntity[] = await this.stockHistoryRepository.createQueryBuilder()
             .select('*')
             .where({ stocknumber: idx })
+            .orderBy({ 'idx': 'DESC' })
             .getRawMany()
         return result
     }
 
     // 신규 재고 추가
-    async insert_stock_menu(@Body() stock: Partial<StockDTO>): Promise<StockDTO> {
-        console.log(stock);
-        return await this.stockRepository.save(stock);
+    async insert_stock_menu(@Body() stock: Partial<InsertStockDTO>): Promise<{ stock: StockEntity, history: StockHistoryEntity } | { message: string }> {
+        const new_stock = await this.stockRepository.save(stock);
+        if (new_stock) {
+            const new_history = await this.stockHistoryRepository.save(
+                {
+                    stocknumber: new_stock.idx,
+                    qty: stock.qty,
+                    is_add: 0,
+                    desc: stock.desc,
+                    writetime: stock.writetime,
+                    writer: "admin"
+                }
+            )
+            return { stock: new_stock, history: new_history };
+        }
+
+        return { message: "post stock menu failed" }
     }
 
     // 재고 정보 수정
-    async update_stock_menu(stockData: Partial<StockDTO>): Promise<any> {
+    async update_stock_menu(stockData: Partial<StockDTO>): Promise<StockDTO> {
         const stock: StockDTO = await this.stockRepository.findOneBy({ idx: stockData.idx });
         Object.assign(stock, stockData)
         const updateStock = await this.stockRepository.save(stock);
@@ -52,7 +67,7 @@ export class ProductService {
     }
 
     // 재고 수량 등록
-    async regist_stock_qty(idx: number, data: RegistStockQtyDTO): Promise<StockHistoryEntity | { message: string }> {
+    async regist_stock_qty(idx: number, data: RegistStockQtyDTO): Promise<{ stock: StockDTO, history: StockHistoryEntity } | { message: string }> {
         const stockMenu = await this.stockRepository.findOneBy({ idx: idx });
         const insertData = {
             stocknumber: idx,
@@ -64,11 +79,11 @@ export class ProductService {
         };
 
         stockMenu.qty = data.qty;
-        const test = await this.stockRepository.save(stockMenu);
+        const edited_stock = await this.stockRepository.save(stockMenu);
 
-        if (test) {
+        if (edited_stock) {
             const new_history = await this.stockHistoryRepository.save(insertData);
-            return new_history;
+            return { stock: edited_stock, history: new_history };
         }
 
         return { message: "post stock failed" }

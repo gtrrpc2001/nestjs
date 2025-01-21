@@ -17,7 +17,7 @@ export class ProductController {
     }
 
     @Post("/stock")  // 재고 신규 등록
-    async inset_stock(@Body() stock: Partial<StockDTO>): Promise<StockDTO> {
+    async inset_stock(@Body() stock: Partial<StockDTO>): Promise<{ stock: StockDTO, history: StockHistoryEntity } | { message: string }> {
         return await this.productService.insert_stock_menu(stock);
     }
 
@@ -37,7 +37,7 @@ export class ProductController {
     }
 
     @Post("/stock/:idx") // 재고 수량 등록하기
-    async regist_stock_qty(@Param('idx') idx: number, @Body() data: RegistStockQtyDTO): Promise<StockHistoryEntity | { message: string }> {
+    async regist_stock_qty(@Param('idx') idx: number, @Body() data: RegistStockQtyDTO): Promise<{ stock: StockDTO, history: StockHistoryEntity } | { message: string }> {
         return await this.productService.regist_stock_qty(idx, data)
     }
 }

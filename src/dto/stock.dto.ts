@@ -20,3 +20,17 @@ export class StockDTO {
     @IsNumber()
     readonly isdeleted: number;
 }
+
+export class InsertStockDTO {
+    @IsString()
+    readonly name: string;
+
+    @IsNumber()
+    readonly qty: number;
+
+    @IsString()
+    readonly writetime: string;
+
+    @IsString()
+    readonly desc: string;
+}
