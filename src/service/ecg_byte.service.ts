@@ -5,7 +5,7 @@ import { commonFun, db } from "src/clsfunc/commonfunc";
 import { ecg_byteEntity } from 'src/entity/ecg_byte.entity';
 import { ecg_byteDTO } from 'src/dto/ecg_byte.dto';
 import { ecg_raw_history_lastEntity } from 'src/entity/ecg_raw_history_last.entity';
-import { GetEcg, GetEcgTime, GetGraphEcgValue } from './common.service.function/ecgbyte.common.function';
+import { GetEcg, GetEcgTime, GetGraphEcgValue, GetEcgIdx, GetEcgByIdx } from './common.service.function/ecgbyte.common.function';
 
 @Injectable()
 export class ecg_byteService {
@@ -78,6 +78,14 @@ export class ecg_byteService {
     }
   }
 
+  async getEcgByIdx(eq: string, startIdx: number) {
+    return await GetEcgByIdx(this.ecg_byteRepository, eq, startIdx)
+  }
+
+  async getEcgIdx(eq: string): Promise<number> {
+    return await GetEcgIdx(this.ecg_byteRepository, eq);
+  }
+
   async getEcg(eq: string, startDate: string): Promise<number[]> {
     return await GetEcg(this.ecg_byteRepository, eq, startDate)
   }
@@ -90,5 +98,3 @@ export class ecg_byteService {
     return await GetGraphEcgValue(this.ecg_byteRepository, eq, startDate, endDate);
   }
 }
-
-

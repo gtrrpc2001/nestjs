@@ -69,3 +69,39 @@ const getGraphEcgChangeValue = async (result: ecg_byteEntity[]): Promise<{ ecg: 
     });
     return ecgArr;
 }
+
+export const GetEcgIdx = async (Repository: Repository<ecg_byteEntity>, eq: string): Promise<number> => {
+    try {
+        const result = await Repository.createQueryBuilder('ecg_byte')
+            .select('idx')
+            .where({ "eq": eq })
+            .orderBy("writetime", "DESC")
+            .limit(1)
+            .getRawOne()
+        return result.idx;
+    } catch (E) {
+        console.log(E)
+    }
+}
+
+export const GetEcgByIdx = async (Repository: Repository<ecg_byteEntity>, eq: string, startIdx: number): Promise<{ idx: number, ecgpacket: number[] }[]> => {
+    try {
+        const result: { idx: number, ecgpacket: Buffer }[] = await Repository.createQueryBuilder('ecg_byte')
+            .select('idx, ecgpacket')
+            .where({ "idx": MoreThan(startIdx) })
+            .andWhere({ "eq": eq })
+            .orderBy("writetime", "ASC")
+            .getRawMany()
+
+
+        const newData: { 'idx': number, ecgpacket: number[] }[] = []
+        result.map((data, i) => {
+            newData.push({ idx: data.idx, ecgpacket: commonFun.getEcgNumber(data.ecgpacket) })
+
+        })
+
+        return newData;
+    } catch (E) {
+        console.log(E)
+    }
+}

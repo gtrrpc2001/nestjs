@@ -15,6 +15,34 @@ export class ecg_byteController {
     return await this.ecg_byteService.gubunKind(body);
   }
 
+  @Get("/EcgIdx")
+  async getEcgIdx(
+    @Query('eq') eq: string,
+    @Query('name') name?: string,
+  ): Promise<number> {
+    switch (name) {
+      case 'test':
+        return await this.test_ecg_byteService.getEcgIdx(eq)
+      default:
+        return await this.ecg_byteService.getEcgIdx(eq)
+    }
+
+  }
+
+  @Get("/EcgTemp")
+  async getEcgTemp(
+    @Query('eq') eq: string,
+    @Query('startIdx') startIdx: number,
+    @Query('name') name?: string,
+  ): Promise<{ idx: number, ecgpacket: number[] }[]> {
+    switch (name) {
+      case 'test':
+        return await this.test_ecg_byteService.getEcgByIdx(eq, startIdx);
+      default:
+        return await this.ecg_byteService.getEcgByIdx(eq, startIdx);
+    }
+  }
+
   // 사용중
   @Get("/Ecg")
   async getEcg(
@@ -28,7 +56,6 @@ export class ecg_byteController {
       default:
         return await this.ecg_byteService.getEcg(eq, startDate);
     }
-
   }
 
   // 사용중
