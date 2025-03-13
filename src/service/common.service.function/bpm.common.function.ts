@@ -23,7 +23,7 @@ export const WebGraphBpmHrvArr = async (Repository: Repository<ecg_csv_bpmdayEnt
     try {
         const subQuery = await subQueryArr(arrRepository, eq, startDate, endDate)
         const result = await Repository.createQueryBuilder('a')
-            .select('a.writetime,a.bpm,a.hrv,b.count')
+            .select('a.writetime,a.bpm,a.hrv,a.breathe ,b.count')
             .leftJoin(subQuery, 'b', 'MID(a.writetime,1,18) = MID(b.writetime,1,18)')
             .where({ "eq": eq })
             .andWhere({ "writetime": MoreThanOrEqual(startDate) })
